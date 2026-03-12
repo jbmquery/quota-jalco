@@ -24,15 +24,15 @@ function ModalRegistro({ open, onClose, registroEditar }) {
 
   useEffect(() => {
     if (registroEditar) {
-      setMes(registroEditar.mes);
-      setCodJalvo(registroEditar.codJalvo);
-      setCodBanco(registroEditar.codBanco);
-      setEstado(registroEditar.estado);
-      setCliente(registroEditar.cliente);
-      setPerito(registroEditar.perito);
-      setFecha(registroEditar.fecha);
-      setHora(registroEditar.hora);
-      setComentario(registroEditar.comentario);
+      setMes(registroEditar.mes || "");
+      setCodJalvo(registroEditar.codJalvo || "");
+      setCodBanco(registroEditar.codBanco || "");
+      setEstado(registroEditar.estado || "");
+      setCliente(registroEditar.cliente || "");
+      setPerito(registroEditar.perito || "");
+      setFecha(registroEditar.fecha || "");
+      setHora(registroEditar.hora || "");
+      setComentario(registroEditar.comentario || "");
     }
   }, [registroEditar]);
 
@@ -60,12 +60,12 @@ function ModalRegistro({ open, onClose, registroEditar }) {
           codJalvo: Number(codJalvo),
           codBanco: Number(codBanco),
           estado,
-          cliente,
-          asunto,
-          perito,
+          cliente: cliente.toUpperCase(),
+          asunto: asunto.toUpperCase(),
+          perito: perito.toUpperCase(),
           fecha,
           hora,
-          comentario,
+          comentario: comentario.toUpperCase() ,
         });
       } else {
         await addDoc(collection(db, "registros"), {
@@ -73,12 +73,12 @@ function ModalRegistro({ open, onClose, registroEditar }) {
           codJalvo: Number(codJalvo),
           codBanco: Number(codBanco),
           estado,
-          cliente,
-          asunto,
-          perito,
+          cliente: cliente.toUpperCase(),
+          asunto: asunto.toUpperCase(),
+          perito: perito.toUpperCase(),
           fecha,
           hora,
-          comentario,
+          comentario: comentario.toUpperCase(),
           fecha_registro: serverTimestamp(),
         });
       }
@@ -95,7 +95,7 @@ function ModalRegistro({ open, onClose, registroEditar }) {
 
     try {
       await deleteDoc(doc(db, "registros", registroEditar.id));
-      limpiarFormulario();  
+      limpiarFormulario();
       onClose();
     } catch (error) {
       console.error("Error eliminando:", error);
