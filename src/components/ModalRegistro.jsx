@@ -8,6 +8,9 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
 
 function ModalRegistro({ open, onClose, registroEditar }) {
@@ -52,12 +55,43 @@ function ModalRegistro({ open, onClose, registroEditar }) {
     const clienteClean = cliente.trim().toUpperCase();
     const peritoClean = perito.trim().toUpperCase();
     const comentarioClean = comentario.trim().toUpperCase();
-    const asunto = `${codJalvo} - ${codBanco} - ${cliente}`;
+    const asunto = `${codJalvo} - ${codBanco} - ${clienteClean}`;
 
     try {
+      if (!codBanco) {
+        alert("Debes ingresar COD BANCO");
+        return;
+      }
+
+      const snapshot = await getDocs(collection(db, "registros"));
+
+      const codBancoNuevo = String(codBanco);
+
+/*       console.log("editando:", editando);
+      console.log("registroEditar:", registroEditar);
+      console.log("codBancoNuevo:", codBancoNuevo); */
+      const existeDuplicado = snapshot.docs.some((docItem) => {
+        const data = docItem.data();
+
+        const codExistente = String(data.codBanco);
+
+        if (editando) {
+          return (
+            docItem.id !== registroEditar.id && codExistente === codBancoNuevo
+          );
+        }
+
+        return codExistente === codBancoNuevo;
+      });
+
+      if (existeDuplicado) {
+        alert(
+          "El COD BANCO ya existe en la base de datos. Debes cambiarlo antes de guardar.",
+        );
+        return;
+      }
       if (editando) {
         const ref = doc(db, "registros", registroEditar.id);
-
         await updateDoc(ref, {
           mes: mes.trim(),
           codJalvo: Number(codJalvo),
