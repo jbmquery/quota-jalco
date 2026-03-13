@@ -3,7 +3,6 @@ import React from "react";
 function TablaRegistros({
   registros,
   onEditar,
-  selectedCell,
   setSelectedCell,
   cellColors
 }) {
@@ -38,21 +37,55 @@ function TablaRegistros({
     "comentario"
   ];
 
+    const formatearFecha = (fecha) => {
+    if (!fecha) return "";
+
+    const [year, month, day] = fecha.split("-");
+    return `${day}/${month}/${year}`;
+    };
+
+    const getWidth = (col) => {
+    switch (col) {
+        case "mes":
+        return "p-1 max-w-20 min-w-20 text-center";
+        case "codJalvo":
+        return "p-1 max-w-20 min-w-20 text-center";
+        case "codBanco":
+        return "p-1 min-w-20 max-w-20 text-center";
+        case "estado":
+        return "p-1 max-w-45 min-w-45 text-center";
+        case "cliente":
+        return "p-1 max-w-70 min-w-70";
+        case "asunto":
+        return "p-1 max-w-85 min-w-85";
+        case "perito":
+        return "p-1 max-w-70 min-w-70";
+        case "fecha":
+        return "p-1 max-w-20 min-w-20 text-center";
+        case "hora":
+        return "p-1 max-w-20 min-w-20 text-center";
+        case "comentario":
+        return "p-1 min-w-200 max-w-300";
+        default:
+        return "";
+    }
+    };
+
   return (
     <div className="overflow-x-auto">
       <table className="table">
         <thead className="text-xs">
-          <tr>
-            <th>MES</th>
-            <th>COD. JALVO</th>
-            <th>COD. BANCO</th>
-            <th>ESTADO</th>
-            <th>CLIENTE</th>
-            <th>ASUNTO</th>
-            <th>PERITO</th>
-            <th>FECHA</th>
-            <th>HORA</th>
-            <th>COMENTARIO</th>
+          <tr className="text-center">
+            <th className="max-w-20 min-w-20 px-0">MES</th>
+            <th className="min-w-20 max-w-20 px-0">COD. JALVO</th>
+            <th className="min-w-20 max-w-20 px-0">COD. BANCO</th>
+            <th className="max-w-45 min-w-45 px-0">ESTADO</th>
+            <th className="max-w-70 min-w-70 px-0">CLIENTE</th>
+            <th className="max-w-85 min-w-85 px-0">ASUNTO</th>
+            <th className="max-w-70 min-w-70 px-0">PERITO</th>
+            <th className="max-w-20 min-w-20 px-0">FECHA</th>
+            <th className="max-w-20 min-w-20 px-0">HORA</th>
+            <th className="max-w-300 min-w-200 px-0">COMENTARIO</th>
           </tr>
         </thead>
 
@@ -61,7 +94,7 @@ function TablaRegistros({
             <tr
               key={r.id}
               onDoubleClick={() => onEditar(r)}
-              className="cursor-pointer hover"
+              className="cursor-pointer hover p-0"
             >
               {columnas.map((col, i) => {
 
@@ -71,6 +104,7 @@ function TablaRegistros({
                 return (
                   <td
                     key={i}
+                    className={getWidth(col)}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedCell(cellId);
@@ -85,7 +119,7 @@ function TablaRegistros({
                         {r.estado}
                       </span>
                     ) : (
-                      r[col]
+                      col === "fecha" ? formatearFecha(r[col]) : r[col]
                     )}
                   </td>
                 );

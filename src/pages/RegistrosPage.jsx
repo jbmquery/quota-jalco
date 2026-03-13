@@ -7,6 +7,8 @@ import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import TablaRegistros from "../components/TablaRegistros";
 import Buscador from "../components/Buscador";
 import Resaltador from "../components/Resaltador";
+import { RiFileExcel2Line } from "react-icons/ri";
+import { IoMdCloudUpload } from "react-icons/io";
 
 function RegistrosPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -119,16 +121,24 @@ function RegistrosPage() {
           />
 
           <div className="tab-content bg-base-100 border-base-300 p-6">
-            <div className="flex flex-col md:flex-row mb-5 justify-between gap-2">
-              <div>
+            <div className="flex flex-col lg:flex-row mb-5 justify-between gap-2">
+              <div className="flex flex-row gap-1 md:gap-2 justify-between">
                 <button
                   className="btn btn-primary rounded-xl"
                   onClick={() => setOpenModal(true)}
                 >
                   + Agregar Registro
                 </button>
+                <div className="flex flex-row gap-1 md:gap-2">
+                  <button className="btn rounded-xl text-2xl bg-green-500 hover:bg-green-600 text-white shadow-sm">
+                    <RiFileExcel2Line />
+                  </button>
+                  <button className="btn rounded-xl text-2xl bg-blue-500 hover:bg-blue-600 text-white shadow-sm">
+                    <IoMdCloudUpload />
+                  </button>
+                </div>
               </div>
-              <div className="flex flex-row gap-1 md:gap-2">
+              <div className="flex flex-row gap-1 md:gap-2 justify-between">
                 <Resaltador onColor={aplicarColor} />
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
@@ -152,7 +162,8 @@ function RegistrosPage() {
 
           <div className="tab-content bg-base-100 border-base-300 p-6">
             <div className="flex flex-row mb-5 justify-end">
-              <div>
+              <div className="flex flex-row gap-1 md:gap-2">
+                <Resaltador onColor={aplicarColor} />
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
@@ -175,7 +186,8 @@ function RegistrosPage() {
 
           <div className="tab-content bg-base-100 border-base-300 p-6">
             <div className="flex flex-row mb-5 justify-end">
-              <div>
+              <div className="flex flex-row gap-1 md:gap-2">
+                <Resaltador onColor={aplicarColor} />
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
@@ -198,7 +210,8 @@ function RegistrosPage() {
 
           <div className="tab-content bg-base-100 border-base-300 p-6">
             <div className="flex flex-row mb-5 justify-end">
-              <div>
+              <div className="flex flex-row gap-1 md:gap-2">
+                <Resaltador onColor={aplicarColor} />
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
@@ -221,7 +234,8 @@ function RegistrosPage() {
 
           <div className="tab-content bg-base-100 border-base-300 p-6">
             <div className="flex flex-row mb-5 justify-end">
-              <div>
+              <div className="flex flex-row gap-1 md:gap-2">
+                <Resaltador onColor={aplicarColor} />
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
@@ -243,7 +257,8 @@ function RegistrosPage() {
 
           <div className="tab-content bg-base-100 border-base-300 p-6">
             <div className="flex flex-row mb-5 justify-end">
-              <div>
+              <div className="flex flex-row gap-1 md:gap-2">
+                <Resaltador onColor={aplicarColor} />
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>

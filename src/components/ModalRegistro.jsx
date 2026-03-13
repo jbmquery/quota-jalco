@@ -214,7 +214,13 @@ function ModalRegistro({ open, onClose, registroEditar }) {
         </div>
 
         <div className="modal-action">
-          <button className="btn" onClick={onClose}>
+          <button
+            className="btn"
+            onClick={() => {
+              limpiarFormulario();
+              onClose();
+            }}
+          >
             Cancelar
           </button>
           {editando && (
