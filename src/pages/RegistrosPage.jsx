@@ -9,6 +9,8 @@ import Buscador from "../components/Buscador";
 import Resaltador from "../components/Resaltador";
 import { RiFileExcel2Line } from "react-icons/ri";
 import { IoMdCloudUpload } from "react-icons/io";
+import { exportarExcel } from "../utils/exportarExcel";
+import { importarExcel } from "../utils/importarExcel";
 
 function RegistrosPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -88,6 +90,13 @@ function RegistrosPage() {
     });
   };
 
+  const handleImport = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    await importarExcel(file);
+  };
+
   return (
     <div className="min-h-screen bg-neutral-200">
       {/* Navbar */}
@@ -130,12 +139,31 @@ function RegistrosPage() {
                   + Agregar Registro
                 </button>
                 <div className="flex flex-row gap-1 md:gap-2">
-                  <button className="btn rounded-xl text-2xl bg-green-500 hover:bg-green-600 text-white shadow-sm">
+                  <button
+                    className="btn rounded-xl text-2xl bg-green-500 hover:bg-green-600 text-white shadow-sm"
+                    onClick={() =>
+                      exportarExcel(registrosFiltrados, cellColors)
+                    }
+                  >
                     <RiFileExcel2Line />
                   </button>
-                  <button className="btn rounded-xl text-2xl bg-blue-500 hover:bg-blue-600 text-white shadow-sm">
+                  <>
+                    <input
+                      type="file"
+                      accept=".xlsx"
+                      id="excelUpload"
+                      hidden
+                      onChange={handleImport}
+                    />
+
+                    <button
+                      className="btn rounded-xl text-2xl bg-blue-500 hover:bg-blue-600 text-white shadow-sm"
+                      onClick={() => document.getElementById("excelUpload").click()}
+                    >
+                      <IoMdCloudUpload />
+                    </button>
+                  </>
                     <IoMdCloudUpload />
-                  </button>
                 </div>
               </div>
               <div className="flex flex-row gap-1 md:gap-2 justify-between">

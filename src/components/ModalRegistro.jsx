@@ -8,8 +8,6 @@ import {
   doc,
   updateDoc,
   deleteDoc,
-  query,
-  where,
   getDocs,
 } from "firebase/firestore";
 
