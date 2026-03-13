@@ -25,7 +25,7 @@ function TablaRegistros({ registros, onEditar }) {
             <th>MES</th>
             <th>COD. JALVO</th>
             <th>COD. BANCO</th>
-            <th>ESTADO</th>
+            <th className="min-w-40">ESTADO</th>
             <th className="min-w-50">CLIENTE</th>
             <th className="min-w-50">ASUNTO</th>
             <th>PERITO</th>

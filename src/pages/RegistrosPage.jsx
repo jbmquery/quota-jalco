@@ -5,23 +5,41 @@ import ModalRegistro from "../components/ModalRegistro";
 import { db } from "../services/firebase";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import TablaRegistros from "../components/TablaRegistros";
+import Buscador from "../components/Buscador";
 
 function RegistrosPage() {
   const [openModal, setOpenModal] = useState(false);
   const [registros, setRegistros] = useState([]);
-  const registrosPte = registros.filter((r) => r.estado === "PTE. AGENDAR");
-  const registrosInspeccion = registros.filter(
+  const [buscar, setBuscar] = useState("");
+
+  const registrosFiltrados = registros.filter((r) => {
+    const texto = buscar.toLowerCase();
+
+    return Object.values(r).some((valor) =>
+      String(valor).toLowerCase().includes(texto),
+    );
+  });
+
+  const registrosPte = registrosFiltrados.filter(
+    (r) => r.estado === "PTE. AGENDAR",
+  );
+
+  const registrosInspeccion = registrosFiltrados.filter(
     (r) => r.estado === "INSPECCION",
   );
-  const registrosDocs = registros.filter(
+
+  const registrosDocs = registrosFiltrados.filter(
     (r) => r.estado === "DOC. ADICIONALES",
   );
-  const registrosElaboracion = registros.filter(
+
+  const registrosElaboracion = registrosFiltrados.filter(
     (r) => r.estado === "ELABORACION",
   );
-  const registrosDesestimado = registros.filter(
+
+  const registrosDesestimado = registrosFiltrados.filter(
     (r) => r.estado === "DESESTIMADO",
   );
+
   const [registroEditar, setRegistroEditar] = useState(null);
 
   useEffect(() => {
@@ -47,8 +65,8 @@ function RegistrosPage() {
       {/* Navbar */}
       <div className="navbar bg-primary shadow-sm">
         <div className="flex-1 px-2">
-          <a className="text-xl text-white font-bold mr-2">QUOTA JALCO</a>
-          <a className="text-xl text-white opacity-75 italic">
+          <a className="md:text-xl text-white font-bold mr-2">QUOTA JALCO</a>
+          <a className="md:text-xl text-white opacity-75 italic">
             by JBM Solutions
           </a>
         </div>
@@ -97,15 +115,11 @@ function RegistrosPage() {
                 <button className="btn text-xl bg-cyan-400 text-white rounded-xl shadow-sm">
                   <HiPaintBrush />
                 </button>
-                <input
-                  type="text"
-                  className="input input-primary rounded-xl"
-                  placeholder="Buscar registro... "
-                />
+                <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
             <TablaRegistros
-              registros={registros}
+              registros={registrosFiltrados}
               onEditar={setRegistroEditar}
             />
           </div>
@@ -121,11 +135,7 @@ function RegistrosPage() {
           <div className="tab-content bg-base-100 border-base-300 p-6">
             <div className="flex flex-row mb-5 justify-end">
               <div>
-                <input
-                  type="text"
-                  className="input input-primary"
-                  placeholder="Buscar registro... "
-                />
+                <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
             <TablaRegistros
@@ -145,11 +155,7 @@ function RegistrosPage() {
           <div className="tab-content bg-base-100 border-base-300 p-6">
             <div className="flex flex-row mb-5 justify-end">
               <div>
-                <input
-                  type="text"
-                  className="input input-primary"
-                  placeholder="Buscar registro... "
-                />
+                <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
             <TablaRegistros
@@ -169,11 +175,7 @@ function RegistrosPage() {
           <div className="tab-content bg-base-100 border-base-300 p-6">
             <div className="flex flex-row mb-5 justify-end">
               <div>
-                <input
-                  type="text"
-                  className="input input-primary"
-                  placeholder="Buscar registro... "
-                />
+                <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
             <TablaRegistros
@@ -193,11 +195,7 @@ function RegistrosPage() {
           <div className="tab-content bg-base-100 border-base-300 p-6">
             <div className="flex flex-row mb-5 justify-end">
               <div>
-                <input
-                  type="text"
-                  className="input input-primary"
-                  placeholder="Buscar registro... "
-                />
+                <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
             <TablaRegistros
@@ -216,11 +214,7 @@ function RegistrosPage() {
           <div className="tab-content bg-base-100 border-base-300 p-6">
             <div className="flex flex-row mb-5 justify-end">
               <div>
-                <input
-                  type="text"
-                  className="input input-primary"
-                  placeholder="Buscar registro... "
-                />
+                <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
             <TablaRegistros
