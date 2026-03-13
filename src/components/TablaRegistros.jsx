@@ -1,6 +1,13 @@
 import React from "react";
 
-function TablaRegistros({ registros, onEditar }) {
+function TablaRegistros({
+  registros,
+  onEditar,
+  selectedCell,
+  setSelectedCell,
+  cellColors
+}) {
+
   const getBadgeEstado = (estado) => {
     switch (estado) {
       case "ELABORACION":
@@ -17,6 +24,20 @@ function TablaRegistros({ registros, onEditar }) {
         return "badge";
     }
   };
+
+  const columnas = [
+    "mes",
+    "codJalvo",
+    "codBanco",
+    "estado",
+    "cliente",
+    "asunto",
+    "perito",
+    "fecha",
+    "hora",
+    "comentario"
+  ];
+
   return (
     <div className="overflow-x-auto">
       <table className="table">
@@ -25,13 +46,13 @@ function TablaRegistros({ registros, onEditar }) {
             <th>MES</th>
             <th>COD. JALVO</th>
             <th>COD. BANCO</th>
-            <th className="min-w-40">ESTADO</th>
-            <th className="min-w-50">CLIENTE</th>
-            <th className="min-w-50">ASUNTO</th>
+            <th>ESTADO</th>
+            <th>CLIENTE</th>
+            <th>ASUNTO</th>
             <th>PERITO</th>
-            <th className="min-w-30">FECHA</th>
+            <th>FECHA</th>
             <th>HORA</th>
-            <th className="min-w-50">COMENTARIO</th>
+            <th>COMENTARIO</th>
           </tr>
         </thead>
 
@@ -42,19 +63,33 @@ function TablaRegistros({ registros, onEditar }) {
               onDoubleClick={() => onEditar(r)}
               className="cursor-pointer hover"
             >
-              <th>{r.mes}</th>
-              <td>{r.codJalvo}</td>
-              <td>{r.codBanco}</td>
-              {/* ESTADO CON BADGE */}
-              <td>
-                <span className={getBadgeEstado(r.estado)}>{r.estado}</span>
-              </td>
-              <td>{r.cliente}</td>
-              <td>{r.asunto}</td>
-              <td>{r.perito}</td>
-              <td>{r.fecha}</td>
-              <td>{r.hora}</td>
-              <td>{r.comentario}</td>
+              {columnas.map((col, i) => {
+
+                const cellId = `${r.id}_${col}`;
+                const color = cellColors[cellId];
+
+                return (
+                  <td
+                    key={i}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedCell(cellId);
+                    }}
+                    style={{
+                      backgroundColor: color || "",
+                      cursor: "cell"
+                    }}
+                  >
+                    {col === "estado" ? (
+                      <span className={getBadgeEstado(r.estado)}>
+                        {r.estado}
+                      </span>
+                    ) : (
+                      r[col]
+                    )}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

@@ -49,6 +49,9 @@ function ModalRegistro({ open, onClose, registroEditar }) {
   };
 
   const handleGuardar = async () => {
+    const clienteClean = cliente.trim().toUpperCase();
+    const peritoClean = perito.trim().toUpperCase();
+    const comentarioClean = comentario.trim().toUpperCase();
     const asunto = `${codJalvo} - ${codBanco} - ${cliente}`;
 
     try {
@@ -56,29 +59,29 @@ function ModalRegistro({ open, onClose, registroEditar }) {
         const ref = doc(db, "registros", registroEditar.id);
 
         await updateDoc(ref, {
-          mes,
+          mes: mes.trim(),
           codJalvo: Number(codJalvo),
           codBanco: Number(codBanco),
-          estado,
-          cliente: cliente.toUpperCase(),
+          estado: estado.trim(),
+          cliente: clienteClean,
           asunto: asunto.toUpperCase(),
-          perito: perito.toUpperCase(),
+          perito: peritoClean,
           fecha,
           hora,
-          comentario: comentario.toUpperCase() ,
+          comentario: comentarioClean,
         });
       } else {
         await addDoc(collection(db, "registros"), {
-          mes,
+          mes: mes.trim(),
           codJalvo: Number(codJalvo),
           codBanco: Number(codBanco),
-          estado,
-          cliente: cliente.toUpperCase(),
+          estado: estado.trim(),
+          cliente: clienteClean,
           asunto: asunto.toUpperCase(),
-          perito: perito.toUpperCase(),
+          perito: peritoClean,
           fecha,
           hora,
-          comentario: comentario.toUpperCase(),
+          comentario: comentarioClean,
           fecha_registro: serverTimestamp(),
         });
       }

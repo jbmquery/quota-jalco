@@ -6,11 +6,14 @@ import { db } from "../services/firebase";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import TablaRegistros from "../components/TablaRegistros";
 import Buscador from "../components/Buscador";
+import Resaltador from "../components/Resaltador";
 
 function RegistrosPage() {
   const [openModal, setOpenModal] = useState(false);
   const [registros, setRegistros] = useState([]);
   const [buscar, setBuscar] = useState("");
+  const [selectedCell, setSelectedCell] = useState(null);
+  const [cellColors, setCellColors] = useState({});
 
   const registrosFiltrados = registros.filter((r) => {
     const texto = buscar.toLowerCase();
@@ -60,6 +63,22 @@ function RegistrosPage() {
     return () => unsubscribe();
   }, []);
 
+  const aplicarColor = (color) => {
+    if (!selectedCell) return;
+
+    setCellColors((prev) => {
+      const nuevo = { ...prev };
+
+      if (color === "remove") {
+        delete nuevo[selectedCell];
+      } else {
+        nuevo[selectedCell] = color;
+      }
+
+      return nuevo;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-neutral-200">
       {/* Navbar */}
@@ -103,24 +122,16 @@ function RegistrosPage() {
                 </button>
               </div>
               <div className="flex flex-row gap-1 md:gap-2">
-                <button className="btn text-xl bg-white text-gray-400 rounded-xl shadow-sm">
-                  <HiPaintBrush />
-                </button>
-                <button className="btn text-xl bg-amber-300 text-black rounded-xl shadow-sm">
-                  <HiPaintBrush />
-                </button>
-                <button className="btn text-xl bg-pink-500 text-white rounded-xl shadow-sm">
-                  <HiPaintBrush />
-                </button>
-                <button className="btn text-xl bg-cyan-400 text-white rounded-xl shadow-sm">
-                  <HiPaintBrush />
-                </button>
+                <Resaltador onColor={aplicarColor} />
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
             <TablaRegistros
               registros={registrosFiltrados}
               onEditar={setRegistroEditar}
+              selectedCell={selectedCell}
+              setSelectedCell={setSelectedCell}
+              cellColors={cellColors}
             />
           </div>
 
@@ -141,6 +152,9 @@ function RegistrosPage() {
             <TablaRegistros
               registros={registrosPte}
               onEditar={setRegistroEditar}
+              selectedCell={selectedCell}
+              setSelectedCell={setSelectedCell}
+              cellColors={cellColors}
             />
           </div>
 
@@ -161,6 +175,9 @@ function RegistrosPage() {
             <TablaRegistros
               registros={registrosInspeccion}
               onEditar={setRegistroEditar}
+              selectedCell={selectedCell}
+              setSelectedCell={setSelectedCell}
+              cellColors={cellColors}
             />
           </div>
 
@@ -181,6 +198,9 @@ function RegistrosPage() {
             <TablaRegistros
               registros={registrosDocs}
               onEditar={setRegistroEditar}
+              selectedCell={selectedCell}
+              setSelectedCell={setSelectedCell}
+              cellColors={cellColors}
             />
           </div>
 
@@ -201,6 +221,9 @@ function RegistrosPage() {
             <TablaRegistros
               registros={registrosElaboracion}
               onEditar={setRegistroEditar}
+              selectedCell={selectedCell}
+              setSelectedCell={setSelectedCell}
+              cellColors={cellColors}
             />
           </div>
           {/* TAB 6 */}
@@ -220,6 +243,9 @@ function RegistrosPage() {
             <TablaRegistros
               registros={registrosDesestimado}
               onEditar={setRegistroEditar}
+              selectedCell={selectedCell}
+              setSelectedCell={setSelectedCell}
+              cellColors={cellColors}
             />
           </div>
         </div>
