@@ -13,7 +13,14 @@ function RegistrosPage() {
   const [registros, setRegistros] = useState([]);
   const [buscar, setBuscar] = useState("");
   const [selectedCell, setSelectedCell] = useState(null);
-  const [cellColors, setCellColors] = useState({});
+  const [cellColors, setCellColors] = useState(() => {
+    const saved = localStorage.getItem("tablaResaltados");
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem("tablaResaltados", JSON.stringify(cellColors));
+  }, [cellColors]);
 
   const registrosFiltrados = registros.filter((r) => {
     const texto = buscar.toLowerCase();
