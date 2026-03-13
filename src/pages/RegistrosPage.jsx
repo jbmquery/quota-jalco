@@ -163,7 +163,6 @@ function RegistrosPage() {
                       <IoMdCloudUpload />
                     </button>
                   </>
-                    <IoMdCloudUpload />
                 </div>
               </div>
               <div className="flex flex-row gap-1 md:gap-2 justify-between">

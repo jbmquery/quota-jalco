@@ -1,6 +1,32 @@
-//src/utils/exportarExcel.js
-import * as XLSX from "xlsx";
+import * as XLSX from "xlsx-js-style";
 import { saveAs } from "file-saver";
+
+const formatearFecha = (fecha) => {
+  if (!fecha) return "";
+
+  if (typeof fecha === "string" && fecha.includes("-")) {
+    const partes = fecha.split("-");
+
+    if (partes.length === 3) {
+      return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+  }
+
+  return fecha;
+};
+
+const generarNombreArchivo = () => {
+  const ahora = new Date();
+
+  const dia = String(ahora.getDate()).padStart(2, "0");
+  const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+  const anio = ahora.getFullYear();
+
+  const hora = String(ahora.getHours()).padStart(2, "0");
+  const minuto = String(ahora.getMinutes()).padStart(2, "0");
+
+  return `registro${dia}${mes}${anio}-${hora}${minuto}.xlsx`;
+};
 
 export const exportarExcel = (registros, cellColors) => {
   const columnas = [
@@ -20,7 +46,7 @@ export const exportarExcel = (registros, cellColors) => {
     const fila = {};
 
     columnas.forEach((col) => {
-      fila[col] = r[col] ?? "";
+      fila[col] = col === "fecha" ? formatearFecha(r[col]) : r[col] ?? "";
     });
 
     return fila;
@@ -40,54 +66,57 @@ export const exportarExcel = (registros, cellColors) => {
 
       const cellId = `${registro.id}_${col}`;
 
-      ws[cellRef].s = {};
+      let fillColor = null;
 
+      // Resaltado manual
       if (cellColors[cellId]) {
-        ws[cellRef].s.fill = {
-          fgColor: { rgb: cellColors[cellId].replace("#", "") },
-        };
+        fillColor = cellColors[cellId].replace("#", "");
       }
 
+      // Badge estado tiene prioridad
       if (col === "estado") {
-        let color = "FFFFFF";
-
-        switch (registro.estado) {
+        switch ((registro.estado || "").toUpperCase()) {
           case "ELABORACION":
-            color = "22C55E";
+            fillColor = "DFF2CE";
             break;
           case "DESESTIMADO":
-            color = "EF4444";
+            fillColor = "FBDDE4";
             break;
           case "DOC. ADICIONALES":
-            color = "3B82F6";
+            fillColor = "D9E1F2";
             break;
           case "PTE. AGENDAR":
-            color = "A855F7";
+            fillColor = "FCE4D6";
             break;
           case "INSPECCION":
-            color = "FACC15";
+            fillColor = "FFF2CC";
             break;
         }
-
-        ws[cellRef].s.fill = {
-          fgColor: { rgb: color },
-        };
       }
+
+      ws[cellRef].s = {
+        fill: fillColor
+          ? {
+              patternType: "solid",
+              fgColor: { rgb: fillColor },
+            }
+          : undefined,
+      };
     });
   }
 
   const wb = XLSX.utils.book_new();
+
   XLSX.utils.book_append_sheet(wb, ws, "Registros");
 
   const excelBuffer = XLSX.write(wb, {
     bookType: "xlsx",
     type: "array",
-    cellStyles: true,
   });
 
   const blob = new Blob([excelBuffer], {
     type: "application/octet-stream",
   });
 
-  saveAs(blob, "registros.xlsx");
+  saveAs(blob, generarNombreArchivo());
 };
