@@ -11,9 +11,11 @@ import { RiFileExcel2Line } from "react-icons/ri";
 import { IoMdCloudUpload } from "react-icons/io";
 import { exportarExcel } from "../utils/exportarExcel";
 import { importarExcel } from "../utils/importarExcel";
+import Alertas from "../components/Alertas";
 
 function RegistrosPage() {
   const [openModal, setOpenModal] = useState(false);
+  const [registroEditar, setRegistroEditar] = useState(null);
   const [registros, setRegistros] = useState([]);
   const [buscar, setBuscar] = useState("");
   const [selectedCell, setSelectedCell] = useState(null);
@@ -54,7 +56,7 @@ function RegistrosPage() {
     (r) => r.estado === "DESESTIMADO",
   );
 
-  const [registroEditar, setRegistroEditar] = useState(null);
+
 
   useEffect(() => {
     const q = query(
@@ -95,6 +97,11 @@ function RegistrosPage() {
     if (!file) return;
 
     await importarExcel(file);
+  };
+
+  const abrirModalEditar = (registro) => {
+    setRegistroEditar(registro);
+    setOpenModal(true);
   };
 
   return (
@@ -158,7 +165,9 @@ function RegistrosPage() {
 
                     <button
                       className="btn rounded-xl text-2xl bg-blue-500 hover:bg-blue-600 text-white shadow-sm"
-                      onClick={() => document.getElementById("excelUpload").click()}
+                      onClick={() =>
+                        document.getElementById("excelUpload").click()
+                      }
                     >
                       <IoMdCloudUpload />
                     </button>
@@ -172,7 +181,7 @@ function RegistrosPage() {
             </div>
             <TablaRegistros
               registros={registrosFiltrados}
-              onEditar={setRegistroEditar}
+              onEditar={abrirModalEditar}
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
               cellColors={cellColors}
@@ -196,7 +205,7 @@ function RegistrosPage() {
             </div>
             <TablaRegistros
               registros={registrosPte}
-              onEditar={setRegistroEditar}
+              onEditar={abrirModalEditar}
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
               cellColors={cellColors}
@@ -220,7 +229,7 @@ function RegistrosPage() {
             </div>
             <TablaRegistros
               registros={registrosInspeccion}
-              onEditar={setRegistroEditar}
+              onEditar={abrirModalEditar}
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
               cellColors={cellColors}
@@ -244,7 +253,7 @@ function RegistrosPage() {
             </div>
             <TablaRegistros
               registros={registrosDocs}
-              onEditar={setRegistroEditar}
+              onEditar={abrirModalEditar}
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
               cellColors={cellColors}
@@ -268,7 +277,7 @@ function RegistrosPage() {
             </div>
             <TablaRegistros
               registros={registrosElaboracion}
-              onEditar={setRegistroEditar}
+              onEditar={abrirModalEditar}
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
               cellColors={cellColors}
@@ -291,7 +300,7 @@ function RegistrosPage() {
             </div>
             <TablaRegistros
               registros={registrosDesestimado}
-              onEditar={setRegistroEditar}
+              onEditar={abrirModalEditar}
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
               cellColors={cellColors}
@@ -307,6 +316,11 @@ function RegistrosPage() {
           setRegistroEditar(null);
         }}
         registroEditar={registroEditar}
+      />
+      {/* ALERTAS */}
+      <Alertas
+        registros={registros}
+        onEditar={(registro) => abrirModalEditar(registro)}
       />
     </div>
   );
