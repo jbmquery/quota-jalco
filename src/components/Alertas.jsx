@@ -52,7 +52,7 @@ function Alertas({ registros, onEditar }) {
       {alertas.map((r) => (
         <div
           key={r.id}
-          className="w-[420px] bg-neutral-100 border border-neutral-300 shadow-xs rounded-2xl p-4 cursor-pointer hover:shadow-lg transition"
+          className="w-[420px] bg-white border-b-6 border-info shadow-xs rounded-md p-4 cursor-pointer hover:shadow-lg transition "
           onClick={() => abrirRegistro(r)}
         >
           <div className="flex flex-row justify-between items-center text-center py-2">

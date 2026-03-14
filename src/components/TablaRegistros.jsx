@@ -132,7 +132,7 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
                           copiarAsunto(r);
                         }}
                       >
-                        <MdContentCopy />
+                        <MdContentCopy className="text-base"/>
                       </button>
                     ) : col === "fecha" ? (
                       formatearFecha(r[col])
