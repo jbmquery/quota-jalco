@@ -55,7 +55,7 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
       case "asunto":
         return "p-1 max-w-15 min-w-15 text-center";
       case "perito":
-        return "p-1 max-w-60 min-w-60";
+        return "p-1 max-w-45 min-w-45";
       case "fecha":
         return "p-1 max-w-20 min-w-20 text-center";
       case "hora":
@@ -89,7 +89,7 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
             <th className="max-w-40 min-w-40 px-0">ESTADO</th>
             <th className="max-w-60 min-w-60 px-0">CLIENTE</th>
             <th className="max-w-15 min-w-15 px-0">ASUNTO</th>
-            <th className="max-w-60 min-w-60 px-0">PERITO</th>
+            <th className="max-w-45 min-w-45 px-0">PERITO</th>
             <th className="max-w-20 min-w-20 px-0">FECHA</th>
             <th className="max-w-20 min-w-20 px-0">HORA</th>
             <th className="px-0">COMENTARIO</th>
