@@ -70,7 +70,7 @@ function Alertas({ registros, onEditar }) {
         <div
           key={`${r.id}_${r.fecha}_${r.hora}`}
           className="
-            w-[420px]
+            w-[300px] md:w-[420px]
             bg-white
             border-b-6
             border-info

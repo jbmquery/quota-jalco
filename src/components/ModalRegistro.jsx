@@ -65,7 +65,7 @@ function ModalRegistro({ open, onClose, registroEditar }) {
 
       const codBancoNuevo = String(codBanco);
 
-/*       console.log("editando:", editando);
+      /*       console.log("editando:", editando);
       console.log("registroEditar:", registroEditar);
       console.log("codBancoNuevo:", codBancoNuevo); */
       const existeDuplicado = snapshot.docs.some((docItem) => {
@@ -143,126 +143,163 @@ function ModalRegistro({ open, onClose, registroEditar }) {
 
   return (
     <div className="modal modal-open">
-      <div className="modal-box max-w-3xl">
+      <div className="modal-box max-w-3xl ">
         <h3 className="font-bold text-lg mb-4">Nuevo Registro</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <select
-            className="select select-bordered"
-            value={mes}
-            onChange={(e) => setMes(e.target.value)}
-          >
-            <option value="" disabled>
-              MES
-            </option>
-            <option>ENERO</option>
-            <option>FEBRERO</option>
-            <option>MARZO</option>
-            <option>ABRIL</option>
-            <option>MAYO</option>
-            <option>JUNIO</option>
-            <option>JULIO</option>
-            <option>AGOSTO</option>
-            <option>SETIEMBRE</option>
-            <option>OCTUBRE</option>
-            <option>NOVIEMBRE</option>
-            <option>DICIEMBRE</option>
-          </select>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">CODIGO JALCO</span>
+            <input
+              type="number"
+              placeholder="COD JALVO"
+              className="input input-bordered w-full"
+              value={codJalvo}
+              onChange={(e) => setCodJalvo(e.target.value)}
+            />
+          </div>
 
-          <input
-            type="number"
-            placeholder="COD JALVO"
-            className="input input-bordered"
-            value={codJalvo}
-            onChange={(e) => setCodJalvo(e.target.value)}
-          />
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">CODIGO BANCO</span>
+            <input
+              type="number"
+              placeholder="COD BANCO"
+              className="input input-bordered w-full"
+              value={codBanco}
+              onChange={(e) => setCodBanco(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">MES</span>
+            <select
+              className="select select-bordered w-full"
+              value={mes}
+              onChange={(e) => setMes(e.target.value)}
+            >
+              <option value="" disabled>
+                MES
+              </option>
+              <option>ENERO</option>
+              <option>FEBRERO</option>
+              <option>MARZO</option>
+              <option>ABRIL</option>
+              <option>MAYO</option>
+              <option>JUNIO</option>
+              <option>JULIO</option>
+              <option>AGOSTO</option>
+              <option>SETIEMBRE</option>
+              <option>OCTUBRE</option>
+              <option>NOVIEMBRE</option>
+              <option>DICIEMBRE</option>
+            </select>
+          </div>
 
-          <input
-            type="number"
-            placeholder="COD BANCO"
-            className="input input-bordered"
-            value={codBanco}
-            onChange={(e) => setCodBanco(e.target.value)}
-          />
+          <div className="flex flex-col gap-1 col-span-1 md:col-span-2 w-full">
+            <span className="text-xs text-gray-400">CLIENTE</span>
+            <input
+              type="text"
+              placeholder="CLIENTE"
+              className="input input-bordered w-full"
+              value={cliente}
+              onChange={(e) => setCliente(e.target.value)}
+            />
+          </div>
 
-          <select
-            className="select select-bordered"
-            value={estado}
-            onChange={(e) => setEstado(e.target.value)}
-          >
-            <option value="" disabled>
-              ESTADO
-            </option>
-            <option>PTE. AGENDAR</option>
-            <option>INSPECCION</option>
-            <option>DOC. ADICIONALES</option>
-            <option>ELABORACION</option>
-            <option>DESESTIMADO</option>
-          </select>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">ESTADO</span>
+            <select
+              className="select select-bordered w-full"
+              value={estado}
+              onChange={(e) => setEstado(e.target.value)}
+            >
+              <option value="" disabled>
+                ESTADO
+              </option>
+              <option>PTE. AGENDAR</option>
+              <option>INSPECCION</option>
+              <option>DOC. ADICIONALES</option>
+              <option>ELABORACION</option>
+              <option>DESESTIMADO</option>
+            </select>
+          </div>
 
-          <input
-            type="text"
-            placeholder="CLIENTE"
-            className="input input-bordered"
-            value={cliente}
-            onChange={(e) => setCliente(e.target.value)}
-          />
+          <div className="flex flex-col gap-1 col-span-1 md:col-span-2 w-full">
+            <span className="text-xs text-gray-400">PERITO</span>
+            <input
+              type="text"
+              placeholder="PERITO"
+              className="input input-bordered w-full"
+              value={perito}
+              onChange={(e) => setPerito(e.target.value)}
+            />
+          </div>
 
-          <input
-            type="text"
-            className="input input-bordered"
-            value={asunto}
-            disabled
-          />
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">FECHA</span>
+            <input
+              type="date"
+              className="input input-bordered w-full"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+            />
+          </div>
 
-          <input
-            type="text"
-            placeholder="PERITO"
-            className="input input-bordered"
-            value={perito}
-            onChange={(e) => setPerito(e.target.value)}
-          />
+          <div className="flex flex-col gap-1 col-span-1 md:col-span-2 w-full">
+            <span className="text-xs text-gray-400">ASUNTO</span>
+            <input
+              type="text"
+              className="input input-bordered w-full border-gray-300"
+              value={asunto}
+              disabled
+            />
+          </div>
 
-          <input
-            type="date"
-            className="input input-bordered"
-            value={fecha}
-            onChange={(e) => setFecha(e.target.value)}
-          />
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">HORA</span>
+            <input
+              type="time"
+              className="input input-bordered w-full"
+              value={hora}
+              onChange={(e) => setHora(e.target.value)}
+            />
+          </div>
 
-          <input
-            type="time"
-            className="input input-bordered"
-            value={hora}
-            onChange={(e) => setHora(e.target.value)}
-          />
-
-          <textarea
-            placeholder="COMENTARIO"
-            className="textarea textarea-bordered md:col-span-2"
-            value={comentario}
-            onChange={(e) => setComentario(e.target.value)}
-          />
+          <div className="flex flex-col gap-1 col-span-1 md:col-span-3 w-full">
+            <span className="text-xs text-gray-400">COMENTARIO</span>
+            <textarea
+              placeholder="COMENTARIO"
+              className="textarea textarea-bordered w-full"
+              value={comentario}
+              onChange={(e) => setComentario(e.target.value)}
+            />
+          </div>
         </div>
 
-        <div className="modal-action">
+        <div className="modal-action flex flex-row justify-between">
           <button
-            className="btn"
+            className="btn rounded-xl"
             onClick={() => {
               limpiarFormulario();
               onClose();
             }}
           >
-            Cancelar
+            Cerrar
           </button>
-          {editando && (
-            <button className="btn btn-error" onClick={handleEliminar}>
-              Eliminar Registro
+          <div className="flex flex-row gap-2">
+            {editando && (
+              <button
+                className="btn btn-error rounded-xl text-white"
+                onClick={handleEliminar}
+              >
+                Eliminar Registro
+              </button>
+            )}
+            <button
+              className="btn btn-primary rounded-xl"
+              onClick={handleGuardar}
+            >
+              Guardar
             </button>
-          )}
-          <button className="btn btn-primary" onClick={handleGuardar}>
-            Guardar
-          </button>
+          </div>
         </div>
       </div>
     </div>

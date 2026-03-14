@@ -61,7 +61,7 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
       case "hora":
         return "p-1 max-w-20 min-w-20 text-center";
       case "comentario":
-        return "p-1";
+        return "p-1 max-w-300 min-w-200 md:w-auto ";
       default:
         return "";
     }
