@@ -16,6 +16,7 @@ import { IoIosNotifications } from "react-icons/io";
 import { SiGoogleanalytics } from "react-icons/si";
 import TablaPendientes from "../components/TablaPendientes";
 import ModalPendientes from "../components/ModalPendientes";
+import AlertasPendientes from "../components/AlertasPendientes";
 
 function RegistrosPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -398,10 +399,17 @@ function RegistrosPage() {
         pendienteEditar={pendienteEditar}
       />
       {/* ALERTAS */}
-      <Alertas
-        registros={registros}
-        onEditar={(registro) => abrirModalEditar(registro)}
-      />
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-3">
+        <Alertas
+          registros={registros}
+          onEditar={(registro) => abrirModalEditar(registro)}
+        />
+
+        <AlertasPendientes
+          pendientes={pendientes}
+          onEditar={(pendiente) => abrirModalPendiente(pendiente)}
+        />
+      </div>
     </div>
   );
 }

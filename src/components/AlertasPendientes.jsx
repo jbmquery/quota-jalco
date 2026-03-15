@@ -1,9 +1,9 @@
-//src/components/Alertas.jsx
+//src/components/AlertasPendientes.jsx
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { ImInfo } from "react-icons/im";
 
-function Alertas({ registros, onEditar }) {
+function AlertasPendientes({ pendientes, onEditar }) {
   const [alertas, setAlertas] = useState([]);
 
   useEffect(() => {
@@ -15,47 +15,44 @@ function Alertas({ registros, onEditar }) {
       const hoyDia = ahora.getDate();
 
       const alertasMostradas =
-        JSON.parse(localStorage.getItem("alertasMostradas")) || [];
+        JSON.parse(localStorage.getItem("alertasPendientesMostradas")) || [];
 
-      const nuevas = registros.filter((r) => {
-        if (r.estado !== "INSPECCION") return false;
-        if (!r.fecha || !r.hora) return false;
+      const nuevas = pendientes.filter((p) => {
+        if (p.estado !== "PENDIENTE") return false;
+        if (!p.fecha || !p.hora) return false;
 
-        const clave = `${r.id}_${r.fecha}_${r.hora}`;
+        const clave = `${p.id}_${p.fecha}_${p.hora}`;
 
         if (alertasMostradas.includes(clave)) return false;
 
-        const [anio, mes, dia] = r.fecha.split("-");
-        const [hora, minuto] = r.hora.split(":");
+        const [anio, mes, dia] = p.fecha.split("-");
+        const [hora, minuto] = p.hora.split(":");
 
         const anioNum = Number(anio);
         const mesNum = Number(mes) - 1;
         const diaNum = Number(dia);
 
-        // ✅ Validar estrictamente que sea HOY
         if (anioNum !== hoyAnio || mesNum !== hoyMes || diaNum !== hoyDia) {
           return false;
         }
 
-        // ✅ Construir fecha alerta = hora registro + 1 hora
         const fechaAlerta = new Date(
-          Number(anioNum),
-          Number(mesNum),
-          Number(diaNum),
-          Number(hora) + 1,
-          Number(minuto),
+          anioNum,
+          mesNum,
+          diaNum,
+          Number(hora),
+          Number(minuto)
         );
 
-        // ✅ Solo mostrar si ya llegó la hora
         return fechaAlerta <= ahora;
       });
 
       if (nuevas.length > 0) {
-        const nuevasClaves = nuevas.map((r) => `${r.id}_${r.fecha}_${r.hora}`);
+        const nuevasClaves = nuevas.map((p) => `${p.id}_${p.fecha}_${p.hora}`);
 
         localStorage.setItem(
-          "alertasMostradas",
-          JSON.stringify([...alertasMostradas, ...nuevasClaves]),
+          "alertasPendientesMostradas",
+          JSON.stringify([...alertasMostradas, ...nuevasClaves])
         );
       }
 
@@ -63,7 +60,7 @@ function Alertas({ registros, onEditar }) {
         const existentes = prev.map((a) => `${a.id}_${a.fecha}_${a.hora}`);
 
         const realmenteNuevas = nuevas.filter(
-          (n) => !existentes.includes(`${n.id}_${n.fecha}_${n.hora}`),
+          (n) => !existentes.includes(`${n.id}_${n.fecha}_${n.hora}`)
         );
 
         return [...prev, ...realmenteNuevas];
@@ -75,27 +72,27 @@ function Alertas({ registros, onEditar }) {
     const intervalo = setInterval(verificarAlertas, 60000);
 
     return () => clearInterval(intervalo);
-  }, [registros]);
+  }, [pendientes]);
 
   const cerrarAlerta = (id) => {
     setAlertas((prev) => prev.filter((a) => a.id !== id));
   };
 
-  const abrirRegistro = (registro) => {
-    onEditar(registro);
-    cerrarAlerta(registro.id);
+  const abrirPendiente = (pendiente) => {
+    onEditar(pendiente);
+    cerrarAlerta(pendiente.id);
   };
 
   return (
     <>
-      {alertas.map((r) => (
+      {alertas.map((p) => (
         <div
-          key={`${r.id}_${r.fecha}_${r.hora}`}
+          key={`${p.id}_${p.fecha}_${p.hora}`}
           className="
             w-[300px] md:w-[420px]
             bg-white
             border-b-6
-            border-info
+            border-warning
             shadow-xl/30
             rounded-md
             p-4
@@ -106,23 +103,22 @@ function Alertas({ registros, onEditar }) {
             duration-1000
             ease-out
             animate-[slideIn_2.9s_cubic-bezier(0.22,1,0.36,1)]
-            bg-white
           "
-          onClick={() => abrirRegistro(r)}
+          onClick={() => abrirPendiente(p)}
         >
-          <div className="flex flex-row justify-between items-center text-center py-2">
-            <div className="flex flex-row justify-between text-xs text-neutral-800 gap-4 items-center">
-              <ImInfo className="text-xl text-info" />
-              <span>Fecha: {r.fecha}</span>
-              <span>Hora: {r.hora}</span>
+          <div className="flex flex-row justify-between items-center py-2">
+            <div className="flex flex-row text-xs text-neutral-800 gap-4 items-center">
+              <ImInfo className="text-xl text-warning" />
+              <span>Fecha: {p.fecha}</span>
+              <span>Hora: {p.hora}</span>
             </div>
 
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                cerrarAlerta(r.id);
+                cerrarAlerta(p.id);
               }}
-              className="text-neutral-800 font-bold hover:text-info"
+              className="text-neutral-800 hover:text-warning"
             >
               <X size={20} />
             </button>
@@ -130,14 +126,19 @@ function Alertas({ registros, onEditar }) {
 
           <div className="text-sm text-neutral-800">
             <div>
-              <strong className="text-xs">Asunto:</strong>
-              <div className="truncate text-xs">{r.asunto}</div>
+              <strong className="text-xs">CODJALVO:</strong>
+              <div className="truncate text-xs">{p.codjalvo}</div>
+            </div>
+
+            <div className="mt-1">
+              <strong className="text-xs">CODBANCO:</strong>
+              <div className="truncate text-xs">{p.codbanco}</div>
             </div>
 
             <div className="mt-2">
               <strong className="text-xs">Comentario:</strong>
               <div className="truncate text-xs">
-                {(r.comentario || "").slice(0, 50)}
+                {(p.comentario || "").slice(0, 50)}
               </div>
             </div>
           </div>
@@ -147,4 +148,4 @@ function Alertas({ registros, onEditar }) {
   );
 }
 
-export default Alertas;
+export default AlertasPendientes;
