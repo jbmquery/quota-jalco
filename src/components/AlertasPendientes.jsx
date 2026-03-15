@@ -1,7 +1,7 @@
 //src/components/AlertasPendientes.jsx
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { ImInfo } from "react-icons/im";
+import { TbAlertTriangleFilled } from "react-icons/tb";
 
 function AlertasPendientes({ pendientes, onEditar }) {
   const [alertas, setAlertas] = useState([]);
@@ -41,7 +41,7 @@ function AlertasPendientes({ pendientes, onEditar }) {
           mesNum,
           diaNum,
           Number(hora),
-          Number(minuto)
+          Number(minuto),
         );
 
         return fechaAlerta <= ahora;
@@ -52,7 +52,7 @@ function AlertasPendientes({ pendientes, onEditar }) {
 
         localStorage.setItem(
           "alertasPendientesMostradas",
-          JSON.stringify([...alertasMostradas, ...nuevasClaves])
+          JSON.stringify([...alertasMostradas, ...nuevasClaves]),
         );
       }
 
@@ -60,7 +60,7 @@ function AlertasPendientes({ pendientes, onEditar }) {
         const existentes = prev.map((a) => `${a.id}_${a.fecha}_${a.hora}`);
 
         const realmenteNuevas = nuevas.filter(
-          (n) => !existentes.includes(`${n.id}_${n.fecha}_${n.hora}`)
+          (n) => !existentes.includes(`${n.id}_${n.fecha}_${n.hora}`),
         );
 
         return [...prev, ...realmenteNuevas];
@@ -108,7 +108,7 @@ function AlertasPendientes({ pendientes, onEditar }) {
         >
           <div className="flex flex-row justify-between items-center py-2">
             <div className="flex flex-row text-xs text-neutral-800 gap-4 items-center">
-              <ImInfo className="text-xl text-warning" />
+              <TbAlertTriangleFilled className="text-xl text-warning" />
               <span>Fecha: {p.fecha}</span>
               <span>Hora: {p.hora}</span>
             </div>
@@ -125,14 +125,16 @@ function AlertasPendientes({ pendientes, onEditar }) {
           </div>
 
           <div className="text-sm text-neutral-800">
-            <div>
-              <strong className="text-xs">CODJALVO:</strong>
-              <div className="truncate text-xs">{p.codjalvo}</div>
-            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-row gap-2">
+                <strong className="text-xs">Cod. Jalvo:</strong>
+                <div className="truncate text-xs">{p.codJalvo}</div>
+              </div>
 
-            <div className="mt-1">
-              <strong className="text-xs">CODBANCO:</strong>
-              <div className="truncate text-xs">{p.codbanco}</div>
+              <div className="flex flex-row gap-2">
+                <strong className="text-xs">Cod. Banco:</strong>
+                <div className="truncate text-xs">{p.codBanco}</div>
+              </div>
             </div>
 
             <div className="mt-2">

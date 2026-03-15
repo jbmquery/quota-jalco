@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { ImInfo } from "react-icons/im";
 
+
 function Alertas({ registros, onEditar }) {
   const [alertas, setAlertas] = useState([]);
 

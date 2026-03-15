@@ -123,6 +123,8 @@ function ModalPendientes({ open, onClose, pendienteEditar }) {
               name="codBanco"
               placeholder="COD. BANCO"
               className="input input-bordered"
+              value={form.codBanco}
+              onChange={handleChange}
             />
           </div>
 
