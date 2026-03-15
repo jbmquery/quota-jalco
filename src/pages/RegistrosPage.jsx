@@ -12,6 +12,9 @@ import { IoMdCloudUpload } from "react-icons/io";
 import { exportarExcel } from "../utils/exportarExcel";
 import { importarExcel } from "../utils/importarExcel";
 import Alertas from "../components/Alertas";
+import { IoIosNotifications } from "react-icons/io";
+import { SiGoogleanalytics } from "react-icons/si";
+import TablaPendientes from "../components/TablaPendientes";
 
 function RegistrosPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -113,12 +116,12 @@ function RegistrosPage() {
           </a>
         </div>
 
-        <div className="flex-none">
-          <ul className="menu menu-horizontal px-1">
-            <li>
-              <a className="text-white font-bold">Salir</a>
-            </li>
-          </ul>
+        <div className="flex flex-row gap-2 md:gap-6 mx-2 ">
+          <SiGoogleanalytics className="text-white text-lg md:text-2xl cursor-pointer hover:hover:scale-[1.1] hover:opacity-75 transition-all duration-300" />
+          <IoIosNotifications className="text-white text-lg md:text-2xl cursor-pointer hover:hover:scale-[1.1] hover:opacity-75 transition-all duration-300" />
+          <a className="text-white font-bold cursor-pointer hover:hover:scale-[1.1] hover:opacity-75 transition-all duration-300">
+            Salir
+          </a>
         </div>
       </div>
 
@@ -212,7 +215,6 @@ function RegistrosPage() {
                 cellColors={cellColors}
               />
             </div>
-
           </div>
 
           {/* TAB 3 */}
@@ -239,7 +241,6 @@ function RegistrosPage() {
                 cellColors={cellColors}
               />
             </div>
-
           </div>
 
           {/* TAB 4 */}
@@ -266,7 +267,6 @@ function RegistrosPage() {
                 cellColors={cellColors}
               />
             </div>
-
           </div>
 
           {/* TAB 5 */}
@@ -293,7 +293,6 @@ function RegistrosPage() {
                 cellColors={cellColors}
               />
             </div>
-
           </div>
           {/* TAB 6 */}
           <input
@@ -318,6 +317,29 @@ function RegistrosPage() {
                 setSelectedCell={setSelectedCell}
                 cellColors={cellColors}
               />
+            </div>
+          </div>
+
+          {/* TAB 7 */}
+          <input
+            type="radio"
+            name="tabs_registros"
+            className="tab tabs-lg font-bold text-black"
+            aria-label="PENDIENTES"
+          />
+
+          <div className="tab-content bg-base-100 border-base-300 p-6">
+            <div className="flex flex-row mb-5 justify-start">
+              <div className="flex flex-row gap-1 md:gap-2">
+                <button
+                  className="btn btn-info rounded-xl text-white"
+                >
+                  + Agregar Pendiente
+                </button>
+              </div>
+            </div>
+            <div className="h-[calc(100vh-260px)]">
+              <TablaPendientes pendientes={[]} />
             </div>
           </div>
         </div>
