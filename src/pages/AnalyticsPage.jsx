@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { db } from "../services/firebase";
+import Navbar from "../components/Navbar";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import {
+  ResponsiveContainer,
   BarChart,
   Bar,
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
@@ -15,13 +16,18 @@ import {
 
 function AnalyticsPage() {
   const [registros, setRegistros] = useState([]);
-  const [pendientes, setPendientes] = useState([]);
-  const [filtroMes, setFiltroMes] = useState("TODOS");
+
+  const currentYear = new Date().getFullYear();
+
+  const [filtroAnio, setFiltroAnio] = useState(String(currentYear));
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
+  const [filtroEstado, setFiltroEstado] = useState("TODOS");
 
   useEffect(() => {
     const q = query(
       collection(db, "registros"),
-      orderBy("fecha_registro", "desc")
+      orderBy("fecha_registro", "desc"),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -36,168 +42,260 @@ function AnalyticsPage() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const q = query(
-      collection(db, "pendientes"),
-      orderBy("fecha_registro", "desc")
-    );
+  const aniosDisponibles = useMemo(() => {
+    const years = new Set();
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setPendientes(data);
+    registros.forEach((r) => {
+      if (r.fecha_registro?.toDate) {
+        years.add(String(r.fecha_registro.toDate().getFullYear()));
+      }
     });
 
-    return () => unsubscribe();
-  }, []);
+    return Array.from(years).sort((a, b) => b - a);
+  }, [registros]);
 
   const registrosFiltrados = useMemo(() => {
-    if (filtroMes === "TODOS") return registros;
-    return registros.filter((r) => r.mes === filtroMes);
-  }, [registros, filtroMes]);
+    const hoy = new Date();
 
-  const estadosData = useMemo(() => {
-    const estados = {};
+    return registros.filter((r) => {
+      if (!r.fecha_registro?.toDate) return false;
+
+      const fecha = r.fecha_registro.toDate();
+
+      const yearOk = String(fecha.getFullYear()) === filtroAnio;
+
+      let inicioOk = true;
+      let finOk = true;
+
+      if (fechaInicio) {
+        inicioOk = fecha >= new Date(fechaInicio);
+      }
+
+      if (fechaFin) {
+        const fin = new Date(fechaFin);
+        fin.setHours(23, 59, 59, 999);
+        finOk = fecha <= fin;
+      }
+
+      if (fechaInicio && !fechaFin) {
+        finOk = fecha <= hoy;
+      }
+
+      const estadoOk = filtroEstado === "TODOS" || r.estado === filtroEstado;
+
+      return yearOk && inicioOk && finOk && estadoOk;
+    });
+  }, [registros, filtroAnio, fechaInicio, fechaFin, filtroEstado]);
+
+  const totalRegistros = registrosFiltrados.length;
+
+  const totalPte = registrosFiltrados.filter(
+    (r) => r.estado === "PTE. AGENDAR",
+  ).length;
+
+  const totalElaborado = registrosFiltrados.filter(
+    (r) => r.estado === "ELABORACION",
+  ).length;
+
+  const totalDesestimado = registrosFiltrados.filter(
+    (r) => r.estado === "DESESTIMADO",
+  ).length;
+
+  const promedio =
+    totalRegistros > 0
+      ? (totalRegistros / Math.max(1, registrosFiltrados.length)).toFixed(2)
+      : 0;
+
+  const barrasData = useMemo(() => {
+    const map = {};
 
     registrosFiltrados.forEach((r) => {
-      estados[r.estado] = (estados[r.estado] || 0) + 1;
+      const fecha = r.fecha_registro.toDate();
+
+      const key =
+        fechaInicio || fechaFin
+          ? `${String(fecha.getDate()).padStart(2, "0")}/${String(
+              fecha.getMonth() + 1,
+            ).padStart(2, "0")}`
+          : fecha.toLocaleString("es-PE", { month: "long" }).toUpperCase();
+
+      map[key] = (map[key] || 0) + 1;
     });
 
-    return Object.entries(estados).map(([name, value]) => ({
+    return Object.entries(map).map(([name, value]) => ({
+      name,
+      value,
+    }));
+  }, [registrosFiltrados, fechaInicio, fechaFin]);
+
+  const estadosData = useMemo(() => {
+    const map = {};
+
+    registrosFiltrados.forEach((r) => {
+      map[r.estado] = (map[r.estado] || 0) + 1;
+    });
+
+    return Object.entries(map).map(([name, value]) => ({
       name,
       value,
     }));
   }, [registrosFiltrados]);
 
-  const mesesData = useMemo(() => {
-    const meses = {};
+  const topClientes = useMemo(() => {
+    const map = {};
 
-    registros.forEach((r) => {
-      meses[r.mes] = (meses[r.mes] || 0) + 1;
+    registrosFiltrados.forEach((r) => {
+      if (!r.cliente) return;
+      map[r.cliente] = (map[r.cliente] || 0) + 1;
     });
 
-    return Object.entries(meses).map(([name, value]) => ({
-      name,
-      value,
-    }));
-  }, [registros]);
+    return Object.entries(map)
+      .map(([cliente, total]) => ({ cliente, total }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 5);
+  }, [registrosFiltrados]);
 
-  const pendientesActivos = pendientes.filter(
-    (p) => p.estado === "PENDIENTE"
-  ).length;
-
-  const totalRegistros = registrosFiltrados.length;
-
-  const COLORS = [
-    "#3b82f6",
-    "#22c55e",
-    "#f59e0b",
-    "#ef4444",
-    "#8b5cf6",
-  ];
+  const COLORS = ["#E72E98", "#F1B715", "#67D392", "#E9607C", "#5EBBFE"];
 
   return (
-    <div className="min-h-screen bg-neutral-200 p-4">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div className="min-h-screen w-full overflow-x-hidden bg-neutral-200">
+      <Navbar />
+      <div className="w-full max-w-full p-4">
+        {/* FILTROS */}
+        <div className="flex flex-col lg:flex-row flex-wrap gap-3 mb-6 w-full justify-center">
+          {/* FILTRO POR AÑO */}
+          <div className="border p-3 rounded-lg flex flex-col gap-2 border-gray-400 w-full lg:w-auto min-w-0">
+            <span className="text-xs text-gray-500">FILTRO POR AÑO</span>
 
-        <div className="stat bg-white rounded-2xl shadow">
-          <div className="stat-title">Total Registros</div>
-          <div className="stat-value text-primary">{totalRegistros}</div>
-        </div>
+            <select
+              className="select select-bordered w-full lg:w-50"
+              value={filtroAnio}
+              onChange={(e) => setFiltroAnio(e.target.value)}
+            >
+              {aniosDisponibles.map((a) => (
+                <option key={a}>{a}</option>
+              ))}
+            </select>
+          </div>
 
-        <div className="stat bg-white rounded-2xl shadow">
-          <div className="stat-title">Pendientes</div>
-          <div className="stat-value text-warning">{pendientesActivos}</div>
-        </div>
+          {/* FILTRO FECHAS */}
+          <div className="border p-3 rounded-lg flex flex-col gap-2 border-gray-400 w-full lg:w-auto min-w-0">
+            <span className="text-xs text-gray-500">
+              FILTRO POR INTERVALO DE FECHAS
+            </span>
 
-        <div className="stat bg-white rounded-2xl shadow">
-          <div className="stat-title">Inspección</div>
-          <div className="stat-value text-warning">
-            {registrosFiltrados.filter((r) => r.estado === "INSPECCION").length}
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-2 items-center w-full">
+              <input
+                type="date"
+                className="input input-bordered w-full min-w-0 lg:w-50"
+                value={fechaInicio}
+                onChange={(e) => setFechaInicio(e.target.value)}
+              />
+
+              <span className="text-xs text-gray-500 text-center">HASTA</span>
+
+              <input
+                type="date"
+                className="input input-bordered w-full min-w-0 lg:w-50"
+                value={fechaFin}
+                min={fechaInicio || undefined}
+                onChange={(e) => setFechaFin(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* FILTRO ESTADOS */}
+          <div className="border p-3 rounded-lg flex flex-col gap-2 border-gray-400 w-full lg:w-auto min-w-0">
+            <span className="text-xs text-gray-500">FILTRO POR ESTADOS</span>
+
+            <select
+              className="select select-bordered w-full lg:w-50"
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value)}
+            >
+              <option value="TODOS">TODOS LOS ESTADOS</option>
+              <option>PTE. AGENDAR</option>
+              <option>ELABORACION</option>
+              <option>DESESTIMADO</option>
+            </select>
           </div>
         </div>
 
-        <div className="stat bg-white rounded-2xl shadow">
-          <div className="stat-title">Elaboración</div>
-          <div className="stat-value text-success">
-            {registrosFiltrados.filter((r) => r.estado === "ELABORACION").length}
+        {/* STATS */}
+        <div className="w-full flex flex-row items-center justify-center text-center">
+          <div className="stats shadow mb-6 w-full stats-vertical md:stats-horizontal bg-white rounded-2xl">
+            <div className="stat">
+              <div className="stat-title">Total Registros</div>
+              <div className="stat-value text-black">{totalRegistros}</div>
+            </div>
+
+            <div className="stat">
+              <div className="stat-title">PTE. AGENDAR</div>
+              <div className="stat-value text-secondary">{totalPte}</div>
+            </div>
+
+            <div className="stat">
+              <div className="stat-title">ELABORACIÓN</div>
+              <div className="stat-value text-success">{totalElaborado}</div>
+            </div>
+
+            <div className="stat">
+              <div className="stat-title">DESESTIMADO</div>
+              <div className="stat-value text-error">{totalDesestimado}</div>
+            </div>
+
+            <div className="stat">
+              <div className="stat-title">Promedio diario</div>
+              <div className="stat-value text-black">{promedio}</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="bg-white rounded-2xl shadow p-4 mb-6">
-        <select
-          className="select select-bordered"
-          value={filtroMes}
-          onChange={(e) => setFiltroMes(e.target.value)}
-        >
-          <option value="TODOS">TODOS</option>
-          <option>ENERO</option>
-          <option>FEBRERO</option>
-          <option>MARZO</option>
-          <option>ABRIL</option>
-          <option>MAYO</option>
-          <option>JUNIO</option>
-          <option>JULIO</option>
-          <option>AGOSTO</option>
-          <option>SETIEMBRE</option>
-          <option>OCTUBRE</option>
-          <option>NOVIEMBRE</option>
-          <option>DICIEMBRE</option>
-        </select>
-      </div>
+        {/* GRAFICOS */}
+        <div className="grid grid-cols-1 lg:grid-cols-8 gap-6 mb-6">
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* CAMBIO TEMPORAL */}
+          <div className="bg-white rounded-2xl shadow p-4 h-[380px] col-span-1 lg:col-span-4">
+            <h2 className="font-bold mb-4">Cambio temporal</h2>
 
-        <div className="bg-white rounded-2xl shadow p-4 h-[420px]">
-          <h2 className="font-bold mb-4">Estados actuales</h2>
+            <ResponsiveContainer width="100%" height="90%">
+              <BarChart data={barrasData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
-          <ResponsiveContainer width="100%" height="90%">
-            <BarChart data={estadosData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" />
-            </BarChart>
-          </ResponsiveContainer>
+          {/* ESTADOS */}
+          <div className="bg-white rounded-2xl shadow p-4 h-[380px] col-span-1 lg:col-span-2">
+            <h2 className="font-bold mb-4">Estados</h2>
+
+            <ResponsiveContainer width="100%" height="90%">
+              <PieChart>
+                <Pie data={estadosData} dataKey="value" outerRadius={130}>
+                  {estadosData.map((entry, index) => (
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* TOP CLIENTES */}
+          <div className="bg-white rounded-2xl shadow p-4 h-[380px] col-span-1 lg:col-span-2">
+            <h2 className="font-bold mb-4">Top 5 clientes recurrentes</h2>
+
+            {topClientes.map((c, i) => (
+              <div key={i} className="flex justify-between py-2 border-b text-xs">
+                <span>{c.cliente}</span>
+                <span>{c.total}</span>
+              </div>
+            ))}
+          </div>
         </div>
-
-        <div className="bg-white rounded-2xl shadow p-4 h-[420px]">
-          <h2 className="font-bold mb-4">Distribución general</h2>
-
-          <ResponsiveContainer width="100%" height="90%">
-            <PieChart>
-              <Pie
-                data={estadosData}
-                dataKey="value"
-                nameKey="name"
-                outerRadius={130}
-              >
-                {estadosData.map((entry, index) => (
-                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow p-4 h-[420px] lg:col-span-2">
-          <h2 className="font-bold mb-4">Registros por mes</h2>
-
-          <ResponsiveContainer width="100%" height="90%">
-            <BarChart data={mesesData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
       </div>
     </div>
   );
