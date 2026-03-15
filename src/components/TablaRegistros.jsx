@@ -113,7 +113,6 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
 
                 lastTap.current = now;
               }}
-              
               onTouchStart={() => {
                 pressTimer.current = setTimeout(() => {
                   onEditar(r);
@@ -125,7 +124,6 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
               onTouchMove={() => {
                 clearTimeout(pressTimer.current);
               }}
-
               className="cursor-pointer hover p-0"
             >
               {columnas.map((col, i) => {
@@ -139,6 +137,10 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedCell(cellId);
+                    }}
+                    onDoubleClick={(e) => {
+                      e.stopPropagation();
+                      onEditar(r);
                     }}
                     style={{
                       backgroundColor: color || "",

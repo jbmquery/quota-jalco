@@ -63,6 +63,10 @@ function RegistrosPage() {
     (r) => r.estado === "DESESTIMADO",
   );
 
+  const pendientesSoloPendiente = pendientes.filter(
+    (p) => p.estado === "PENDIENTE"
+  );
+
   useEffect(() => {
     const q = query(
       collection(db, "registros"),
@@ -368,7 +372,7 @@ function RegistrosPage() {
             </div>
             <div className="h-[calc(100vh-260px)]">
               <TablaPendientes
-                pendientes={pendientes}
+                pendientes={pendientesSoloPendiente}
                 onEditar={abrirModalPendiente}
               />
             </div>

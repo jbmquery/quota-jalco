@@ -105,85 +105,100 @@ function ModalPendientes({ open, onClose, pendienteEditar }) {
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <input
-            type="text"
-            name="codJalvo"
-            placeholder="COD. JALVO"
-            className="input input-bordered"
-            value={form.codJalvo}
-            onChange={handleChange}
-          />
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">CODIGO JALVO</span>
+            <input
+              type="text"
+              name="codJalvo"
+              placeholder="COD. JALVO"
+              className="input input-bordered"
+              value={form.codJalvo}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">CODIGO BANCO</span>
+            <input
+              type="text"
+              name="codBanco"
+              placeholder="COD. BANCO"
+              className="input input-bordered"
+            />
+          </div>
 
-          <input
-            type="text"
-            name="codBanco"
-            placeholder="COD. BANCO"
-            className="input input-bordered"
-            value={form.codBanco}
-            onChange={handleChange}
-          />
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">FECHA PROGRAMADA</span>
+            <input
+              type="date"
+              name="fecha"
+              className="input input-bordered"
+              value={form.fecha}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">HORA PROGRAMADA</span>
+            <input
+              type="time"
+              name="hora"
+              className="input input-bordered"
+              value={form.hora}
+              onChange={handleChange}
+            />
+          </div>
 
-          <input
-            type="date"
-            name="fecha"
-            className="input input-bordered"
-            value={form.fecha}
-            onChange={handleChange}
-          />
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-400">ESTADO</span>
+            <select
+              name="estado"
+              className="select select-bordered"
+              value={form.estado}
+              onChange={handleChange}
+            >
+              <option value="" disabled>
+                ESTADO
+              </option>
+              <option value="PENDIENTE">PENDIENTE</option>
+              <option value="LISTO">LISTO</option>
+            </select>
+          </div>
 
-          <input
-            type="time"
-            name="hora"
-            className="input input-bordered"
-            value={form.hora}
-            onChange={handleChange}
-          />
-
-          <select
-            name="estado"
-            className="select select-bordered"
-            value={form.estado}
-            onChange={handleChange}
-          >
-            <option value="" disabled>
-              ESTADO
-            </option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="LISTO">LISTO</option>
-          </select>
-
+          <div className="flex flex-col gap-1 md:col-span-2">
+            <span className="text-xs text-gray-400">COMENTARIO</span>
           <textarea
             name="comentario"
             placeholder="COMENTARIO"
-            className="textarea w-full textarea-bordered md:col-span-2"
+            className="textarea w-full textarea-bordered "
             rows="4"
             value={form.comentario}
             onChange={handleChange}
           />
+</div>
+
         </div>
 
         <div className="modal-action flex justify-between">
-        <button className="btn rounded-xl" onClick={onClose}>
+          <button className="btn rounded-xl" onClick={onClose}>
             Cerrar
-        </button>
+          </button>
 
-        <div className="flex gap-2">
+          <div className="flex gap-2">
             {pendienteEditar && (
-            <button
+              <button
                 className="btn btn-error rounded-xl text-white"
                 onClick={eliminarPendiente}
-            >
+              >
                 Eliminar
-            </button>
+              </button>
             )}
 
             <button
-            className="btn btn-success text-white rounded-xl"
-            onClick={guardarPendiente}
+              className="btn btn-success text-white rounded-xl"
+              onClick={guardarPendiente}
             >
-            Guardar
+              Guardar
             </button>
-        </div>
+          </div>
         </div>
       </div>
     </dialog>
