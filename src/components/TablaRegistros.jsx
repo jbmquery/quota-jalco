@@ -1,3 +1,4 @@
+//src/components/TablaRegistros.jsx
 import React from "react";
 import { MdContentCopy } from "react-icons/md";
 import { toast } from "react-toastify";

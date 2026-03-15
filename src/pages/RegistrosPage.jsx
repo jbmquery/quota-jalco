@@ -15,6 +15,7 @@ import Alertas from "../components/Alertas";
 import { IoIosNotifications } from "react-icons/io";
 import { SiGoogleanalytics } from "react-icons/si";
 import TablaPendientes from "../components/TablaPendientes";
+import ModalPendientes from "../components/ModalPendientes";
 
 function RegistrosPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -26,6 +27,9 @@ function RegistrosPage() {
     const saved = localStorage.getItem("tablaResaltados");
     return saved ? JSON.parse(saved) : {};
   });
+  const [pendientes, setPendientes] = useState([]);
+  const [openPendiente, setOpenPendiente] = useState(false);
+  const [pendienteEditar, setPendienteEditar] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("tablaResaltados", JSON.stringify(cellColors));
@@ -77,6 +81,24 @@ function RegistrosPage() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const q = query(
+      collection(db, "pendientes"),
+      orderBy("fecha_registro", "desc")
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setPendientes(data);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const aplicarColor = (color) => {
     if (!selectedCell) return;
 
@@ -103,6 +125,11 @@ function RegistrosPage() {
   const abrirModalEditar = (registro) => {
     setRegistroEditar(registro);
     setOpenModal(true);
+  };
+
+  const abrirModalPendiente = (pendiente) => {
+    setPendienteEditar(pendiente);
+    setOpenPendiente(true);
   };
 
   return (
@@ -333,13 +360,17 @@ function RegistrosPage() {
               <div className="flex flex-row gap-1 md:gap-2">
                 <button
                   className="btn btn-info rounded-xl text-white"
+                  onClick={() => setOpenPendiente(true)}
                 >
                   + Agregar Pendiente
                 </button>
               </div>
             </div>
             <div className="h-[calc(100vh-260px)]">
-              <TablaPendientes pendientes={[]} />
+              <TablaPendientes
+                pendientes={pendientes}
+                onEditar={abrirModalPendiente}
+              />
             </div>
           </div>
         </div>
@@ -352,6 +383,15 @@ function RegistrosPage() {
           setRegistroEditar(null);
         }}
         registroEditar={registroEditar}
+      />
+      {/* MODAL PENDIENTES */}
+      <ModalPendientes
+        open={openPendiente || !!pendienteEditar}
+        onClose={() => {
+          setOpenPendiente(false);
+          setPendienteEditar(null);
+        }}
+        pendienteEditar={pendienteEditar}
       />
       {/* ALERTAS */}
       <Alertas
