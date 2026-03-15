@@ -117,9 +117,8 @@ function ModalRegistro({ open, onClose, registroEditar }) {
           fecha_registro: serverTimestamp(),
         });
       }
-
-      limpiarFormulario();
       onClose();
+      limpiarFormulario();
     } catch (error) {
       console.error("Error guardando:", error);
     }
@@ -130,8 +129,8 @@ function ModalRegistro({ open, onClose, registroEditar }) {
 
     try {
       await deleteDoc(doc(db, "registros", registroEditar.id));
-      limpiarFormulario();
       onClose();
+      limpiarFormulario();
     } catch (error) {
       console.error("Error eliminando:", error);
     }

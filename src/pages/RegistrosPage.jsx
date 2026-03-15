@@ -17,6 +17,7 @@ import { SiGoogleanalytics } from "react-icons/si";
 import TablaPendientes from "../components/TablaPendientes";
 import ModalPendientes from "../components/ModalPendientes";
 import AlertasPendientes from "../components/AlertasPendientes";
+import {useNavigate} from "react-router-dom";
 
 function RegistrosPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -31,6 +32,7 @@ function RegistrosPage() {
   const [pendientes, setPendientes] = useState([]);
   const [openPendiente, setOpenPendiente] = useState(false);
   const [pendienteEditar, setPendienteEditar] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     localStorage.setItem("tablaResaltados", JSON.stringify(cellColors));
@@ -149,7 +151,7 @@ function RegistrosPage() {
         </div>
 
         <div className="flex flex-row gap-2 md:gap-6 mx-2 ">
-          <SiGoogleanalytics className="text-white text-lg md:text-2xl cursor-pointer hover:hover:scale-[1.1] hover:opacity-75 transition-all duration-300" />
+          <SiGoogleanalytics onClick={() => navigate("/analytics")} className="text-white text-lg md:text-2xl cursor-pointer hover:hover:scale-[1.1] hover:opacity-75 transition-all duration-300" />
           <IoIosNotifications className="text-white text-lg md:text-2xl cursor-pointer hover:hover:scale-[1.1] hover:opacity-75 transition-all duration-300" />
           <a className="text-white font-bold cursor-pointer hover:hover:scale-[1.1] hover:opacity-75 transition-all duration-300">
             Salir
