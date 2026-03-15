@@ -6,6 +6,7 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
+  deleteDoc,
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 
@@ -81,6 +82,19 @@ function ModalPendientes({ open, onClose, pendienteEditar }) {
     }
   };
 
+  const eliminarPendiente = async () => {
+    if (!pendienteEditar) return;
+
+    try {
+      await deleteDoc(doc(db, "pendientes", pendienteEditar.id));
+      toast.success("Pendiente eliminado");
+      onClose();
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al eliminar");
+    }
+  };
+
   if (!open) return null;
 
   return (
@@ -141,24 +155,35 @@ function ModalPendientes({ open, onClose, pendienteEditar }) {
           <textarea
             name="comentario"
             placeholder="COMENTARIO"
-            className="textarea textarea-bordered md:col-span-2"
+            className="textarea w-full textarea-bordered md:col-span-2"
             rows="4"
             value={form.comentario}
             onChange={handleChange}
           />
         </div>
 
-        <div className="modal-action">
-          <button className="btn btn-neutral rounded-xl" onClick={onClose}>
-            Cancelar
-          </button>
+        <div className="modal-action flex justify-between">
+        <button className="btn rounded-xl" onClick={onClose}>
+            Cerrar
+        </button>
 
-          <button
-            className="btn btn-primary rounded-xl"
+        <div className="flex gap-2">
+            {pendienteEditar && (
+            <button
+                className="btn btn-error rounded-xl text-white"
+                onClick={eliminarPendiente}
+            >
+                Eliminar
+            </button>
+            )}
+
+            <button
+            className="btn btn-success text-white rounded-xl"
             onClick={guardarPendiente}
-          >
+            >
             Guardar
-          </button>
+            </button>
+        </div>
         </div>
       </div>
     </dialog>
