@@ -119,13 +119,21 @@ function AnalyticsPage() {
             ).padStart(2, "0")}`
           : fecha.toLocaleString("es-PE", { month: "long" }).toUpperCase();
 
-      map[key] = (map[key] || 0) + 1;
+      if (!map[key]) {
+        map[key] = {
+          name: key,
+          "PTE. AGENDAR": 0,
+          ELABORACION: 0,
+          DESESTIMADO: 0,
+          INSPECCION: 0,
+          "DOC. ADICIONALES": 0,
+        };
+      }
+
+      map[key][r.estado] += 1;
     });
 
-    return Object.entries(map).map(([name, value]) => ({
-      name,
-      value,
-    }));
+    return Object.values(map);
   }, [registrosFiltrados, fechaInicio, fechaFin]);
 
   const estadosData = useMemo(() => {
@@ -253,7 +261,6 @@ function AnalyticsPage() {
 
         {/* GRAFICOS */}
         <div className="grid grid-cols-1 lg:grid-cols-8 gap-6 mb-6">
-
           {/* CAMBIO TEMPORAL */}
           <div className="bg-white rounded-2xl shadow p-4 h-[380px] col-span-1 lg:col-span-4">
             <h2 className="font-bold mb-4">Cambio temporal</h2>
@@ -263,7 +270,41 @@ function AnalyticsPage() {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="value" />
+
+                <Bar
+                  dataKey="PTE. AGENDAR"
+                  stackId="a"
+                  fill="#E72E98"
+                  radius={[0, 0, 0, 0]}
+                />
+
+                <Bar
+                  dataKey="ELABORACION"
+                  stackId="a"
+                  fill="#67D392"
+                  radius={[0, 0, 0, 0]}
+                />
+
+                <Bar
+                  dataKey="DESESTIMADO"
+                  stackId="a"
+                  fill="#E9607C"
+                  radius={[0, 0, 0, 0]}
+                />
+
+                <Bar
+                  dataKey="INSPECCION"
+                  stackId="a"
+                  fill="#F1B715"
+                  radius={[0, 0, 0, 0]}
+                />
+
+                <Bar
+                    dataKey="DOC. ADICIONALES"
+                  stackId="a"
+                  fill="#5EBBFE"
+                  radius={[0, 0, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -289,7 +330,10 @@ function AnalyticsPage() {
             <h2 className="font-bold mb-4">Top 5 clientes recurrentes</h2>
 
             {topClientes.map((c, i) => (
-              <div key={i} className="flex justify-between py-2 border-b text-xs">
+              <div
+                key={i}
+                className="flex justify-between py-2 border-b text-xs"
+              >
                 <span>{c.cliente}</span>
                 <span>{c.total}</span>
               </div>
