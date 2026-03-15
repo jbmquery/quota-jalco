@@ -143,7 +143,7 @@ function ModalRegistro({ open, onClose, registroEditar }) {
 
   return (
     <div className="modal modal-open">
-      <div className="modal-box max-w-3xl ">
+      <div className="modal-box md:max-w-3xl max-w-[90vw] max-h-[90vh] overflow-y-auto">
         <h3 className="font-bold text-lg mb-4">Nuevo Registro</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">

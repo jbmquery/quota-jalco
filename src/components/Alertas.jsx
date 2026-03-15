@@ -9,6 +9,10 @@ function Alertas({ registros, onEditar }) {
     const verificarAlertas = () => {
       const ahora = new Date();
 
+      const hoyAnio = ahora.getFullYear();
+      const hoyMes = ahora.getMonth();
+      const hoyDia = ahora.getDate();
+
       const alertasMostradas =
         JSON.parse(localStorage.getItem("alertasMostradas")) || [];
 
@@ -23,29 +27,46 @@ function Alertas({ registros, onEditar }) {
         const [anio, mes, dia] = r.fecha.split("-");
         const [hora, minuto] = r.hora.split(":");
 
-        const fechaRegistro = new Date(
-          Number(anio),
-          Number(mes) - 1,
-          Number(dia),
+        const anioNum = Number(anio);
+        const mesNum = Number(mes) - 1;
+        const diaNum = Number(dia);
+
+        // ✅ Validar estrictamente que sea HOY
+        if (anioNum !== hoyAnio || mesNum !== hoyMes || diaNum !== hoyDia) {
+          return false;
+        }
+
+        // ✅ Construir fecha alerta = hora registro + 1 hora
+        const fechaAlerta = new Date(
+          Number(anioNum),
+          Number(mesNum),
+          Number(diaNum),
           Number(hora) + 1,
-          Number(minuto)
+          Number(minuto),
         );
 
-        return fechaRegistro <= ahora;
+        // ✅ Solo mostrar si ya llegó la hora
+        return fechaAlerta <= ahora;
       });
 
       if (nuevas.length > 0) {
-        const nuevasClaves = nuevas.map(
-          (r) => `${r.id}_${r.fecha}_${r.hora}`
-        );
+        const nuevasClaves = nuevas.map((r) => `${r.id}_${r.fecha}_${r.hora}`);
 
         localStorage.setItem(
           "alertasMostradas",
-          JSON.stringify([...alertasMostradas, ...nuevasClaves])
+          JSON.stringify([...alertasMostradas, ...nuevasClaves]),
         );
       }
 
-      setAlertas(nuevas);
+      setAlertas((prev) => {
+        const existentes = prev.map((a) => `${a.id}_${a.fecha}_${a.hora}`);
+
+        const realmenteNuevas = nuevas.filter(
+          (n) => !existentes.includes(`${n.id}_${n.fecha}_${n.hora}`),
+        );
+
+        return [...prev, ...realmenteNuevas];
+      });
     };
 
     verificarAlertas();
@@ -74,15 +95,17 @@ function Alertas({ registros, onEditar }) {
             bg-white
             border-b-6
             border-info
-            shadow-xs
+            shadow-xl/30
             rounded-md
             p-4
             cursor-pointer
-            hover:shadow-lg
+            inset-shadow-sm
+            hover:shadow-lg hover:scale-[1.02]
             transition-all
-            duration-500
+            duration-1000
             ease-out
-            animate-[slideIn_0.5s_ease-out]
+            animate-[slideIn_2.9s_cubic-bezier(0.22,1,0.36,1)]
+            bg-white
           "
           onClick={() => abrirRegistro(r)}
         >

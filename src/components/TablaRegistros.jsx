@@ -1,6 +1,7 @@
 import React from "react";
 import { MdContentCopy } from "react-icons/md";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
+import { useRef } from "react";
 
 function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
   const getBadgeEstado = (estado) => {
@@ -19,7 +20,8 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
         return "badge";
     }
   };
-
+  const pressTimer = useRef(null);
+  const lastTap = useRef(0);
   const columnas = [
     "mes",
     "codJalvo",
@@ -61,7 +63,7 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
       case "hora":
         return "p-1 max-w-20 min-w-20 text-center";
       case "comentario":
-        return "p-1 max-w-300 min-w-200 md:w-auto ";
+        return "p-1 min-w-200 md:min-w-auto ";
       default:
         return "";
     }
@@ -101,6 +103,28 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
             <tr
               key={r.id}
               onDoubleClick={() => onEditar(r)}
+              onClick={() => {
+                const now = Date.now();
+
+                if (now - lastTap.current < 300) {
+                  onEditar(r);
+                }
+
+                lastTap.current = now;
+              }}
+              
+              onTouchStart={() => {
+                pressTimer.current = setTimeout(() => {
+                  onEditar(r);
+                }, 600);
+              }}
+              onTouchEnd={() => {
+                clearTimeout(pressTimer.current);
+              }}
+              onTouchMove={() => {
+                clearTimeout(pressTimer.current);
+              }}
+
               className="cursor-pointer hover p-0"
             >
               {columnas.map((col, i) => {
@@ -132,7 +156,7 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
                           copiarAsunto(r);
                         }}
                       >
-                        <MdContentCopy className="text-base"/>
+                        <MdContentCopy className="text-base" />
                       </button>
                     ) : col === "fecha" ? (
                       formatearFecha(r[col])

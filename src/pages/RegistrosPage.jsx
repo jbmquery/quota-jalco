@@ -310,7 +310,7 @@ function RegistrosPage() {
       </div>
       {/* MODAL */}
       <ModalRegistro
-        open={openModal || registroEditar}
+        open={openModal || !!registroEditar}
         onClose={() => {
           setOpenModal(false);
           setRegistroEditar(null);
