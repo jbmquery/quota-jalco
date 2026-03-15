@@ -28,6 +28,7 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
     "codJalvo",
     "codBanco",
     "estado",
+    "copiarCliente",
     "cliente",
     "asunto",
     "perito",
@@ -53,6 +54,8 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
         return "p-1 min-w-20 max-w-20 text-center";
       case "estado":
         return "p-1 max-w-40 min-w-40 text-center";
+      case "copiarCliente":
+        return "p-1 max-w-12 min-w-12 text-center";
       case "cliente":
         return "p-1 max-w-60 min-w-60";
       case "asunto":
@@ -81,6 +84,17 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
     }
   };
 
+  const copiarCliente = async (registro) => {
+    const txtCliente = registro.cliente || "";
+
+    try {
+      await navigator.clipboard.writeText(txtCliente);
+      toast.success("Cliente copiado al portapapeles");
+    } catch (error) {
+      console.error("Error copiando:", error);
+    }
+  };
+
   return (
     <div className="overflow-x-auto h-full rounded-lg border border-base-300">
       <table className="table table-pin-rows">
@@ -90,6 +104,7 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
             <th className="min-w-20 max-w-20 px-0">COD. JALVO</th>
             <th className="min-w-20 max-w-20 px-0">COD. BANCO</th>
             <th className="max-w-40 min-w-40 px-0">ESTADO</th>
+            <th className="max-w-12 min-w-12 px-0"></th>
             <th className="max-w-60 min-w-60 px-0">CLIENTE</th>
             <th className="max-w-15 min-w-15 px-0">ASUNTO</th>
             <th className="max-w-45 min-w-45 px-0">PERITO</th>
@@ -151,6 +166,16 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
                       <span className={getBadgeEstado(r.estado)}>
                         {r.estado}
                       </span>
+                    ) : col === "copiarCliente" ? (
+                      <button
+                        className="btn btn-xs bg-white border-none hover:bg-neutral-300"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copiarCliente(r);
+                        }}
+                      >
+                        <MdContentCopy className="text-base" />
+                      </button>
                     ) : col === "asunto" ? (
                       <button
                         className="btn btn-xs btn-outline btn-neutral-300"

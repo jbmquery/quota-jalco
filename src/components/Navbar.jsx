@@ -10,7 +10,7 @@ function Navbar() {
     <div className="navbar bg-primary shadow-sm">
 
       <div className="flex-1 px-2">
-        <a className="md:text-xl text-white font-bold mr-2">
+        <a className="md:text-xl text-white font-bold mr-2 cursor-pointer" onClick={() => navigate("/registros")}>
           QUOTA JALVO
         </a>
       </div>
