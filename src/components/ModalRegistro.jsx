@@ -294,7 +294,7 @@ function ModalRegistro({ open, onClose, registroEditar }) {
               </button>
             )}
             <button
-              className="btn btn-primary rounded-xl"
+              className="btn btn-success rounded-xl text-white"
               onClick={handleGuardar}
             >
               Guardar

@@ -56,8 +56,6 @@ function RegistrosPage() {
     (r) => r.estado === "DESESTIMADO",
   );
 
-
-
   useEffect(() => {
     const q = query(
       collection(db, "registros"),
@@ -179,13 +177,15 @@ function RegistrosPage() {
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
-            <TablaRegistros
-              registros={registrosFiltrados}
-              onEditar={abrirModalEditar}
-              selectedCell={selectedCell}
-              setSelectedCell={setSelectedCell}
-              cellColors={cellColors}
-            />
+            <div className="h-[calc(100vh-260px)]">
+              <TablaRegistros
+                registros={registrosFiltrados}
+                onEditar={abrirModalEditar}
+                selectedCell={selectedCell}
+                setSelectedCell={setSelectedCell}
+                cellColors={cellColors}
+              />
+            </div>
           </div>
 
           {/* TAB 2 */}
@@ -203,13 +203,16 @@ function RegistrosPage() {
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
-            <TablaRegistros
-              registros={registrosPte}
-              onEditar={abrirModalEditar}
-              selectedCell={selectedCell}
-              setSelectedCell={setSelectedCell}
-              cellColors={cellColors}
-            />
+            <div className="h-[calc(100vh-260px)]">
+              <TablaRegistros
+                registros={registrosPte}
+                onEditar={abrirModalEditar}
+                selectedCell={selectedCell}
+                setSelectedCell={setSelectedCell}
+                cellColors={cellColors}
+              />
+            </div>
+
           </div>
 
           {/* TAB 3 */}
@@ -227,13 +230,16 @@ function RegistrosPage() {
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
-            <TablaRegistros
-              registros={registrosInspeccion}
-              onEditar={abrirModalEditar}
-              selectedCell={selectedCell}
-              setSelectedCell={setSelectedCell}
-              cellColors={cellColors}
-            />
+            <div className="h-[calc(100vh-260px)]">
+              <TablaRegistros
+                registros={registrosInspeccion}
+                onEditar={abrirModalEditar}
+                selectedCell={selectedCell}
+                setSelectedCell={setSelectedCell}
+                cellColors={cellColors}
+              />
+            </div>
+
           </div>
 
           {/* TAB 4 */}
@@ -251,13 +257,16 @@ function RegistrosPage() {
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
-            <TablaRegistros
-              registros={registrosDocs}
-              onEditar={abrirModalEditar}
-              selectedCell={selectedCell}
-              setSelectedCell={setSelectedCell}
-              cellColors={cellColors}
-            />
+            <div className="h-[calc(100vh-260px)]">
+              <TablaRegistros
+                registros={registrosDocs}
+                onEditar={abrirModalEditar}
+                selectedCell={selectedCell}
+                setSelectedCell={setSelectedCell}
+                cellColors={cellColors}
+              />
+            </div>
+
           </div>
 
           {/* TAB 5 */}
@@ -275,13 +284,16 @@ function RegistrosPage() {
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
-            <TablaRegistros
-              registros={registrosElaboracion}
-              onEditar={abrirModalEditar}
-              selectedCell={selectedCell}
-              setSelectedCell={setSelectedCell}
-              cellColors={cellColors}
-            />
+            <div className="h-[calc(100vh-260px)]">
+              <TablaRegistros
+                registros={registrosElaboracion}
+                onEditar={abrirModalEditar}
+                selectedCell={selectedCell}
+                setSelectedCell={setSelectedCell}
+                cellColors={cellColors}
+              />
+            </div>
+
           </div>
           {/* TAB 6 */}
           <input
@@ -298,13 +310,15 @@ function RegistrosPage() {
                 <Buscador value={buscar} onChange={setBuscar} />
               </div>
             </div>
-            <TablaRegistros
-              registros={registrosDesestimado}
-              onEditar={abrirModalEditar}
-              selectedCell={selectedCell}
-              setSelectedCell={setSelectedCell}
-              cellColors={cellColors}
-            />
+            <div className="h-[calc(100vh-260px)]">
+              <TablaRegistros
+                registros={registrosDesestimado}
+                onEditar={abrirModalEditar}
+                selectedCell={selectedCell}
+                setSelectedCell={setSelectedCell}
+                cellColors={cellColors}
+              />
+            </div>
           </div>
         </div>
       </div>

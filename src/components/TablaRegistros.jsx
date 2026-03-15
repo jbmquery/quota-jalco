@@ -81,9 +81,9 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table">
-        <thead className="text-xs">
+    <div className="overflow-x-auto h-full rounded-lg border border-base-300">
+      <table className="table table-pin-rows">
+        <thead className="text-xs sticky top-0 bg-base-100 z-20">
           <tr className="text-center">
             <th className="max-w-20 min-w-20 px-0">MES</th>
             <th className="min-w-20 max-w-20 px-0">COD. JALVO</th>
