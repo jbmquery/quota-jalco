@@ -53,7 +53,7 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
       case "codBanco":
         return "p-1 min-w-20 max-w-20 text-center";
       case "estado":
-        return "p-1 max-w-40 min-w-40 text-center";
+        return "p-1 max-w-45 min-w-45 text-center";
       case "copiarCliente":
         return "p-1 max-w-12 min-w-12 text-center";
       case "cliente":
@@ -113,7 +113,7 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
             <th className="max-w-20 min-w-20 px-0">MES</th>
             <th className="min-w-20 max-w-20 px-0">COD. JALVO</th>
             <th className="min-w-20 max-w-20 px-0">COD. BANCO</th>
-            <th className="max-w-40 min-w-40 px-0">ESTADO</th>
+            <th className="max-w-45 min-w-45 px-0">ESTADO</th>
             <th className="max-w-12 min-w-12 px-0"></th>
             <th className="max-w-60 min-w-60 px-0">CLIENTE</th>
             <th className="max-w-15 min-w-15 px-0">ASUNTO</th>
