@@ -22,6 +22,10 @@ function ModalRegistro({ open, onClose, registroEditar }) {
   const [hora, setHora] = useState("");
   const [comentario, setComentario] = useState("");
   const editando = !!registroEditar;
+  const [clientesExistentes, setClientesExistentes] = useState([]);
+  const [sugerenciasCliente, setSugerenciasCliente] = useState([]);
+  const [peritosExistentes, setPeritosExistentes] = useState([]);
+  const [sugerenciasPerito, setSugerenciasPerito] = useState([]);
 
   useEffect(() => {
     if (registroEditar) {
@@ -47,6 +51,9 @@ function ModalRegistro({ open, onClose, registroEditar }) {
     setFecha("");
     setHora("");
     setComentario("");
+
+    setSugerenciasCliente([]);
+    setSugerenciasPerito([]);
   };
 
   const handleGuardar = async () => {
@@ -138,6 +145,29 @@ function ModalRegistro({ open, onClose, registroEditar }) {
 
   const asunto = `${codJalvo} - ${codBanco} - ${cliente}`;
 
+  useEffect(() => {
+    const cargarDatos = async () => {
+      const snapshot = await getDocs(collection(db, "registros"));
+
+      const clientes = snapshot.docs
+        .map((doc) => doc.data().cliente?.trim())
+        .filter((c) => c);
+
+      const peritos = snapshot.docs
+        .map((doc) => doc.data().perito?.trim())
+        .filter((p) => p);
+
+/*       console.log("CLIENTES:", clientes);
+      console.log("PERITOS:", peritos);
+      console.log(snapshot.docs.map((doc) => doc.data())); */
+
+      setClientesExistentes([...new Set(clientes)]);
+      setPeritosExistentes([...new Set(peritos)]);
+    };
+
+    cargarDatos();
+  }, []);
+
   if (!open) return null;
 
   return (
@@ -192,15 +222,50 @@ function ModalRegistro({ open, onClose, registroEditar }) {
             </select>
           </div>
 
-          <div className="flex flex-col gap-1 col-span-1 md:col-span-2 w-full">
+          <div className="flex flex-col gap-1 col-span-1 md:col-span-2 w-full relative">
             <span className="text-xs text-gray-400">CLIENTE</span>
+
             <input
               type="text"
               placeholder="CLIENTE"
               className="input input-bordered w-full"
               value={cliente}
-              onChange={(e) => setCliente(e.target.value)}
+              onChange={(e) => {
+                const valor = e.target.value;
+                setCliente(valor);
+
+                if (valor.trim() === "") {
+                  setSugerenciasCliente([]);
+                  return;
+                }
+
+                const filtrados = clientesExistentes
+                  .filter((c) => c.toLowerCase().includes(valor.toLowerCase()))
+                  .slice(0, 6);
+
+                setSugerenciasCliente(filtrados);
+              }}
+              onBlur={() => {
+                setTimeout(() => setSugerenciasCliente([]), 150);
+              }}
             />
+
+            {sugerenciasCliente.length > 0 && (
+              <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-[9999] max-h-48 overflow-y-auto">
+                {sugerenciasCliente.map((item, index) => (
+                  <li
+                    key={index}
+                    className="px-3 py-2 hover:bg-neutral-100 cursor-pointer text-sm"
+                    onClick={() => {
+                      setCliente(item);
+                      setSugerenciasCliente([]);
+                    }}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="flex flex-col gap-1">
@@ -221,15 +286,50 @@ function ModalRegistro({ open, onClose, registroEditar }) {
             </select>
           </div>
 
-          <div className="flex flex-col gap-1 col-span-1 md:col-span-2 w-full">
+          <div className="flex flex-col gap-1 col-span-1 md:col-span-2 w-full relative">
             <span className="text-xs text-gray-400">PERITO</span>
+
             <input
               type="text"
               placeholder="PERITO"
               className="input input-bordered w-full"
               value={perito}
-              onChange={(e) => setPerito(e.target.value)}
+              onChange={(e) => {
+                const valor = e.target.value;
+                setPerito(valor);
+
+                if (valor.trim() === "") {
+                  setSugerenciasPerito([]);
+                  return;
+                }
+
+                const filtrados = peritosExistentes
+                  .filter((p) => p.toLowerCase().includes(valor.toLowerCase()))
+                  .slice(0, 6);
+
+                setSugerenciasPerito(filtrados);
+              }}
+              onBlur={() => {
+                setTimeout(() => setSugerenciasPerito([]), 150);
+              }}
             />
+
+            {sugerenciasPerito.length > 0 && (
+              <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-[9999] max-h-48 overflow-y-auto">
+                {sugerenciasPerito.map((item, index) => (
+                  <li
+                    key={index}
+                    className="px-3 py-2 hover:bg-neutral-100 cursor-pointer text-sm"
+                    onClick={() => {
+                      setPerito(item);
+                      setSugerenciasPerito([]);
+                    }}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="flex flex-col gap-1">
