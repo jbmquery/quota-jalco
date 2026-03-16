@@ -26,7 +26,7 @@ function Navbar({ soundMuted, setSoundMuted }) {
         </a>
       </div>
 
-      <div className="flex flex-row gap-2 md:gap-6 mx-2">
+      <div className="flex flex-row gap-6 mx-2">
         <SiGoogleanalytics
           onClick={() => navigate("/analytics")}
           className="text-white text-lg md:text-2xl cursor-pointer hover:scale-[1.1] hover:opacity-75 transition-all duration-300"
