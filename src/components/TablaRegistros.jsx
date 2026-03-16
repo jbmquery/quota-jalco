@@ -95,6 +95,16 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
     }
   };
 
+  const obtenerFechaSolo = (timestamp) => {
+    if (!timestamp) return "";
+
+    const fecha = timestamp.toDate();
+    return fecha.toISOString().split("T")[0];
+  };
+
+  let ultimoDia = null;
+  let grupoColor = false;
+
   return (
     <div className="overflow-x-auto h-full rounded-lg border border-base-300">
       <table className="table table-pin-rows">
@@ -115,87 +125,98 @@ function TablaRegistros({ registros, onEditar, setSelectedCell, cellColors }) {
         </thead>
 
         <tbody className="text-xs">
-          {registros.map((r) => (
-            <tr
-              key={r.id}
-              onDoubleClick={() => onEditar(r)}
-              onClick={() => {
-                const now = Date.now();
+          {registros.map((r) => {
+            const diaActual = obtenerFechaSolo(r.fecha_registro);
 
-                if (now - lastTap.current < 300) {
-                  onEditar(r);
-                }
+            if (diaActual !== ultimoDia) {
+              grupoColor = !grupoColor;
+              ultimoDia = diaActual;
+            }
 
-                lastTap.current = now;
-              }}
-              onTouchStart={() => {
-                pressTimer.current = setTimeout(() => {
-                  onEditar(r);
-                }, 600);
-              }}
-              onTouchEnd={() => {
-                clearTimeout(pressTimer.current);
-              }}
-              onTouchMove={() => {
-                clearTimeout(pressTimer.current);
-              }}
-              className="cursor-pointer hover p-0"
-            >
-              {columnas.map((col, i) => {
-                const cellId = `${r.id}_${col}`;
-                const color = cellColors[cellId];
+            const bgGrupo = grupoColor ? "bg-neutral-200" : "bg-white";
 
-                return (
-                  <td
-                    key={i}
-                    className={getWidth(col)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedCell(cellId);
-                    }}
-                    onDoubleClick={(e) => {
-                      e.stopPropagation();
-                      onEditar(r);
-                    }}
-                    style={{
-                      backgroundColor: color || "",
-                      cursor: "cell",
-                    }}
-                  >
-                    {col === "estado" ? (
-                      <span className={getBadgeEstado(r.estado)}>
-                        {r.estado}
-                      </span>
-                    ) : col === "copiarCliente" ? (
-                      <button
-                        className="btn btn-xs bg-white border-none hover:bg-neutral-300"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          copiarCliente(r);
-                        }}
-                      >
-                        <MdContentCopy className="text-base" />
-                      </button>
-                    ) : col === "asunto" ? (
-                      <button
-                        className="btn btn-xs btn-outline btn-neutral-300"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          copiarAsunto(r);
-                        }}
-                      >
-                        <MdContentCopy className="text-base" />
-                      </button>
-                    ) : col === "fecha" ? (
-                      formatearFecha(r[col])
-                    ) : (
-                      r[col]
-                    )}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
+            return (
+              <tr
+                key={r.id}
+                onDoubleClick={() => onEditar(r)}
+                onClick={() => {
+                  const now = Date.now();
+
+                  if (now - lastTap.current < 300) {
+                    onEditar(r);
+                  }
+
+                  lastTap.current = now;
+                }}
+                onTouchStart={() => {
+                  pressTimer.current = setTimeout(() => {
+                    onEditar(r);
+                  }, 600);
+                }}
+                onTouchEnd={() => {
+                  clearTimeout(pressTimer.current);
+                }}
+                onTouchMove={() => {
+                  clearTimeout(pressTimer.current);
+                }}
+                className={`cursor-pointer p-0 ${bgGrupo} hover:bg-neutral-200`}
+              >
+                {columnas.map((col, i) => {
+                  const cellId = `${r.id}_${col}`;
+                  const color = cellColors[cellId];
+
+                  return (
+                    <td
+                      key={i}
+                      className={getWidth(col)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCell(cellId);
+                      }}
+                      onDoubleClick={(e) => {
+                        e.stopPropagation();
+                        onEditar(r);
+                      }}
+                      style={{
+                        backgroundColor: color || "",
+                        cursor: "cell",
+                      }}
+                    >
+                      {col === "estado" ? (
+                        <span className={getBadgeEstado(r.estado)}>
+                          {r.estado}
+                        </span>
+                      ) : col === "copiarCliente" ? (
+                        <button
+                          className={`btn btn-xs btn-outline border-none hover:bg-neutral-300`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            copiarCliente(r);
+                          }}
+                        >
+                          <MdContentCopy className="text-base" />
+                        </button>
+                      ) : col === "asunto" ? (
+                        <button
+                          className="btn btn-xs btn-outline btn-neutral-300"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            copiarAsunto(r);
+                          }}
+                        >
+                          <MdContentCopy className="text-base" />
+                        </button>
+                      ) : col === "fecha" ? (
+                        formatearFecha(r[col])
+                      ) : (
+                        r[col]
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
