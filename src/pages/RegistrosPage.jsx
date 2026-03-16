@@ -34,6 +34,13 @@ function RegistrosPage() {
   const [openPendiente, setOpenPendiente] = useState(false);
   const [pendienteEditar, setPendienteEditar] = useState(null);
   const navigate = useNavigate();
+  const [soundMuted, setSoundMuted] = useState(() => {
+    return JSON.parse(localStorage.getItem("soundMuted")) || false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("soundMuted", JSON.stringify(soundMuted));
+  }, [soundMuted]);
 
   useEffect(() => {
     localStorage.setItem("tablaResaltados", JSON.stringify(cellColors));
@@ -143,7 +150,7 @@ function RegistrosPage() {
   return (
     <div className="min-h-screen bg-neutral-200">
       {/* Navbar */}
-      <Navbar />
+      <Navbar soundMuted={soundMuted} setSoundMuted={setSoundMuted} />
 
       {/* Contenido */}
       <div className="flex flex-col gap-3 p-3">
@@ -391,11 +398,13 @@ function RegistrosPage() {
         <Alertas
           registros={registros}
           onEditar={(registro) => abrirModalEditar(registro)}
+          soundMuted={soundMuted}
         />
 
         <AlertasPendientes
           pendientes={pendientes}
           onEditar={(pendiente) => abrirModalPendiente(pendiente)}
+          soundMuted={soundMuted}
         />
       </div>
     </div>

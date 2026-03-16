@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { ImInfo } from "react-icons/im";
 
-
-function Alertas({ registros, onEditar }) {
+function Alertas({ registros, onEditar, soundMuted }) {
   const [alertas, setAlertas] = useState([]);
+  const sonido = new Audio("/alerta.mp3");
 
   useEffect(() => {
     const verificarAlertas = () => {
@@ -52,6 +52,10 @@ function Alertas({ registros, onEditar }) {
       });
 
       if (nuevas.length > 0) {
+        if (!soundMuted) {
+          sonido.play().catch(() => {});
+        }
+
         const nuevasClaves = nuevas.map((r) => `${r.id}_${r.fecha}_${r.hora}`);
 
         localStorage.setItem(

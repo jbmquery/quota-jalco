@@ -1,9 +1,11 @@
+//src/components/Navbar.jsx
 import React from "react";
 import { SiGoogleanalytics } from "react-icons/si";
 import { IoIosNotifications } from "react-icons/io";
+import { IoIosNotificationsOff } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
-function Navbar() {
+function Navbar({ soundMuted, setSoundMuted }) {
   const navigate = useNavigate();
 
   return (
@@ -22,9 +24,17 @@ function Navbar() {
           className="text-white text-lg md:text-2xl cursor-pointer hover:scale-[1.1] hover:opacity-75 transition-all duration-300"
         />
 
-        <IoIosNotifications
-          className="text-white text-lg md:text-2xl cursor-pointer hover:scale-[1.1] hover:opacity-75 transition-all duration-300"
+        {soundMuted ? (
+        <IoIosNotificationsOff
+            onClick={() => setSoundMuted(false)}
+            className="text-white text-lg md:text-2xl cursor-pointer hover:scale-[1.1] hover:opacity-75 transition-all duration-300"
         />
+        ) : (
+        <IoIosNotifications
+            onClick={() => setSoundMuted(true)}
+            className="text-white text-lg md:text-2xl cursor-pointer hover:scale-[1.1] hover:opacity-75 transition-all duration-300"
+        />
+        )}
 
         <a className="text-white font-bold cursor-pointer hover:scale-[1.1] hover:opacity-75 transition-all duration-300">
           Salir

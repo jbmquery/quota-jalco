@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { TbAlertTriangleFilled } from "react-icons/tb";
 
-function AlertasPendientes({ pendientes, onEditar }) {
+function AlertasPendientes({ pendientes, onEditar, soundMuted }) {
   const [alertas, setAlertas] = useState([]);
+  const sonido = new Audio("/alerta.mp3");
 
   useEffect(() => {
     const verificarAlertas = () => {
@@ -48,6 +49,9 @@ function AlertasPendientes({ pendientes, onEditar }) {
       });
 
       if (nuevas.length > 0) {
+        if (!soundMuted) {
+          sonido.play().catch(() => {});
+        }
         const nuevasClaves = nuevas.map((p) => `${p.id}_${p.fecha}_${p.hora}`);
 
         localStorage.setItem(
